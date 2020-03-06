@@ -18,6 +18,27 @@ class SettingsView extends State<SettingsScreen> {
   List<String> _savedTechs = [];
   final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
 
+  @override
+  void initState(){
+    super.initState();
+
+    // Extract the arguments from the current ModalRoute settings and cast
+    // them as ScreenArguments.
+    var route = ModalRoute.of(context);
+    //Avoid null exception if the screen is not called by navigator
+    if(route!=null){
+      final SettingsScreenArguments args = ModalRoute.of(context).settings.arguments;
+      if(args != null){
+        //Args are null if the screen is not called by the action button
+        if(args.localTechs.length > 0){
+          _savedTechs = args.localTechs;
+        }
+      }
+
+    }
+
+  }
+
   Widget _buildSuggestions() {
     return FutureBuilder<List<Tech>>(
       future: fetchTechs(),
@@ -70,12 +91,7 @@ class SettingsView extends State<SettingsScreen> {
   // #docregion RWS-build
   @override
   Widget build(BuildContext context) {
-    // Extract the arguments from the current ModalRoute settings and cast
-    // them as ScreenArguments.
-    final SettingsScreenArguments args = ModalRoute.of(context).settings.arguments;
-    if(args.localTechs.length > 0){
-      _savedTechs = args.localTechs;
-    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Choose youre favorite tools'),

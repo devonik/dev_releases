@@ -10,27 +10,34 @@ class App extends AppMVC {
   static MaterialApp _app;
   static String get title => _app.title.toString();
 
+  final List<String> localTechs;
+  App({this.localTechs});
 
   @override
   Widget build(BuildContext context) {
-
-    _app = MaterialApp(
-      title: 'mvc example',
-      home: HomeScreen([]),
-      routes: <String, WidgetBuilder>{
-        // Set routes for using the Navigator.
-        '/home': (BuildContext context) => new HomeScreen([]),
-        '/settings': (BuildContext context) => new SettingsScreen()
-      }
+    Widget _defaultScreen;
+    if(localTechs != null){
+      _defaultScreen = localTechs.length > 0 ? new HomeScreen(localTechs) : new SettingsScreen();
+    }else{
+      //If the app is opened first time we have no local techs
+      _defaultScreen = new SettingsScreen();
+    }
+    return MaterialApp(
+        title: 'mvc example',
+        home: _defaultScreen,
+        routes: <String, WidgetBuilder>{
+          // Set routes for using the Navigator.
+          '/home': (BuildContext context) => new HomeScreen(localTechs),
+          '/settings': (BuildContext context) => new SettingsScreen()
+        }
     );
-    return _app;
   }
 
-  @override
-  _AppState createState() => _AppState();
-}
+  //@override
+  // _AppState createState() => _AppState();
 
-class _AppState extends State<App> {
+
+/*class _AppState extends State<App> {
 
   Future<List<String>> _localTechs = fetchLocalTechs();
 
@@ -40,18 +47,14 @@ class _AppState extends State<App> {
       future: _localTechs, // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
         List<Widget> children;
-
+        Widget _defaultScreen;
         if (snapshot.hasData) {
           if (snapshot.data.length > 0) {
-            return MaterialApp(
-                title: 'mvc example',
-                home: HomeScreen(snapshot.data),
-                routes: <String, WidgetBuilder>{
-                  // Set routes for using the Navigator.
-                  '/home': (BuildContext context) => new HomeScreen(snapshot.data),
-                  '/settings': (BuildContext context) => new SettingsScreen()
-                }
-            );
+            _defaultScreen = HomeScreen(snapshot.data);
+
+          }else{
+            //If the local techs are not there atm display the settings page instead
+            _defaultScreen = SettingsScreen();
           }
         } else if (snapshot.hasError) {
           children = <Widget>[
@@ -78,9 +81,17 @@ class _AppState extends State<App> {
             )
           ];
         }
-        //If the local techs are not there atm display the settings page instead
-        return SettingsScreen();
+
+        return MaterialApp(
+            title: 'mvc example',
+            home: _defaultScreen,
+            routes: <String, WidgetBuilder>{
+              // Set routes for using the Navigator.
+              '/home': (BuildContext context) => new HomeScreen([]),
+              '/settings': (BuildContext context) => new SettingsScreen()
+            }
+        );
       },
     );
-  }
+  }*/
 }
