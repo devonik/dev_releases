@@ -3,6 +3,7 @@ import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 
 Future<List<Tech>> fetchTechs() async {
@@ -31,6 +32,7 @@ Future<List<String>> fetchLocalTechs() async{
   return prefs.getStringList('techs');
 
 }
+
 
 
 

@@ -1,6 +1,7 @@
 
 
 import 'package:dev_releases/src/models/tech_model.dart';
+import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,23 +9,24 @@ import 'package:flare_flutter/flare_actor.dart';
 
 
 class SettingsScreen extends StatefulWidget {
-  //bool settingsDone = false;
   @protected
   @override
   State<SettingsScreen> createState() => SettingsView();
 }
 
 class SettingsView extends State<SettingsScreen> {
-  List<String> _savedTechs = [];
+  List<String> _favTechIdsStringList = [];
   final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
   bool _isScreenCalledByNavigator = false;
+  final TechRepository techRepository = new TechRepository();
+  List<Tech> _remoteTechData;
 
   Widget _buildSuggestions() {
     return FutureBuilder<List<Tech>>(
       future: fetchTechs(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-
+          _remoteTechData = snapshot.data;
           return ListView.builder(
               padding: const EdgeInsets.all(16.0),
               itemCount: snapshot.data.length,
@@ -35,9 +37,6 @@ class SettingsView extends State<SettingsScreen> {
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
-
-        // By default, show a loading spinner.
-        //return CircularProgressIndicator();
       return Center(
           child: FlareActor("assets/animations/CircularProgressIndicator.flr",
               animation: "Loading",
@@ -53,7 +52,7 @@ class SettingsView extends State<SettingsScreen> {
 
   // #docregion _buildRow
   Widget _buildRow(Tech tech) {
-    bool isTechFavorite = _savedTechs.contains(tech.title);
+    bool isTechFavorite = _favTechIdsStringList.contains(tech.id.toString());
     return ListTile(
       title: Text(
         tech.title,
@@ -66,9 +65,9 @@ class SettingsView extends State<SettingsScreen> {
       onTap: () {
         setState(() {
           if (isTechFavorite) {
-            _savedTechs.remove(tech.title);
+            _favTechIdsStringList.remove(tech.id.toString());
           } else {
-            _savedTechs.add(tech.title);
+            _favTechIdsStringList.add(tech.id.toString());
           }
         });
       },
@@ -86,11 +85,11 @@ class SettingsView extends State<SettingsScreen> {
     //Avoid null exception if the screen is not called by navigator
     if(route!=null){
       final SettingsScreenArguments args = route.settings.arguments;
+      //Args are null if the screen is not called by the action button
       if(args != null){
-        //Args are null if the screen is not called by the action button
-        if(args.localTechs.length > 0){
-          _savedTechs = args.localTechs;
-          _isScreenCalledByNavigator = args.isScreenCalledByNavigator;
+        _isScreenCalledByNavigator = args.isScreenCalledByNavigator;
+        if(args.favTechIdsStringList.length > 0){
+          _favTechIdsStringList = args.favTechIdsStringList;
         }
       }
 
@@ -113,14 +112,26 @@ class SettingsView extends State<SettingsScreen> {
     //Add to favorite techs
 
     //prefs.remove('techs');
-    prefs.setStringList('techs', _savedTechs);
+    for(int i = 0; i < _favTechIdsStringList.length; i++){
+      int id = int.parse(_favTechIdsStringList[i]);
+      techRepository.getById(id).then((value) {
+        if(value == null){
+          //The item is not in our local database yet - lets save it
+          Tech itemToSave = _remoteTechData.singleWhere((item) => item.id == id);
+          techRepository.insertTech(itemToSave);
+        }
+      });
+
+    }
+
+    prefs.setStringList('techs', _favTechIdsStringList);
 
     if(_isScreenCalledByNavigator){
       //If we called this screen by a navigator route (as example the button on home) we want to go back to home
-      Navigator.pop(context);
+      Navigator.pop(context, _favTechIdsStringList);
     }else{
       //If we called this screen not by navigator (first screen if there no techs saved on local storage) we want to go to home without a navigation route (without back button)
-      Navigator.pushReplacementNamed(context, "/home", arguments: SettingsScreenArguments(_savedTechs, false));
+      Navigator.pushReplacementNamed(context, "/home", arguments: SettingsScreenArguments(_favTechIdsStringList, false));
     }
 
   }
@@ -131,8 +142,8 @@ class SettingsView extends State<SettingsScreen> {
 // In this example, create a class that contains a customizable
 // title and message.
 class SettingsScreenArguments {
-  final List<String> localTechs;
+  final List<String> favTechIdsStringList;
   final bool isScreenCalledByNavigator;
 
-  SettingsScreenArguments(this.localTechs, this.isScreenCalledByNavigator);
+  SettingsScreenArguments(this.favTechIdsStringList, this.isScreenCalledByNavigator);
 }
