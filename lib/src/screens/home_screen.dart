@@ -1,7 +1,5 @@
-import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -32,6 +30,20 @@ class HomeView extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Extract the arguments from the current ModalRoute settings and cast
+    // them as ScreenArguments.
+    var route = ModalRoute.of(context);
+    //Avoid null exception if the screen is not called by navigator
+    if(route!=null){
+      final SettingsScreenArguments args = route.settings.arguments;
+      if(args != null){
+        //Args are null if the screen is not called by the action button
+        if(args.localTechs.length > 0){
+          localTechs = args.localTechs;
+        }
+      }
+
+    }
       return Scaffold(
           appBar: AppBar(
             title: Text('Startup Name Generator'),
@@ -39,7 +51,7 @@ class HomeView extends State<HomeScreen> {
               IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/settings', arguments: SettingsScreenArguments(localTechs));
+                    Navigator.pushNamed(context, '/settings', arguments: SettingsScreenArguments(localTechs, true));
                   }
               ),
             ],

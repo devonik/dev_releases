@@ -2,10 +2,10 @@
 
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
-import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flare_flutter/flare_actor.dart';
+
 
 class SettingsScreen extends StatefulWidget {
   //bool settingsDone = false;
@@ -17,6 +17,7 @@ class SettingsScreen extends StatefulWidget {
 class SettingsView extends State<SettingsScreen> {
   List<String> _savedTechs = [];
   final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
+  bool _isScreenCalledByNavigator = false;
 
   Widget _buildSuggestions() {
     return FutureBuilder<List<Tech>>(
@@ -35,7 +36,14 @@ class SettingsView extends State<SettingsScreen> {
         }
 
         // By default, show a loading spinner.
-        return CircularProgressIndicator();
+        //return CircularProgressIndicator();
+      return Center(
+          child: FlareActor("assets/animations/CircularProgressIndicator.flr",
+              animation: "Loading",
+              color: Colors.blueGrey
+          ),
+        );
+
       },
     );
 
@@ -76,16 +84,17 @@ class SettingsView extends State<SettingsScreen> {
     var route = ModalRoute.of(context);
     //Avoid null exception if the screen is not called by navigator
     if(route!=null){
-      final SettingsScreenArguments args = ModalRoute.of(context).settings.arguments;
+      final SettingsScreenArguments args = route.settings.arguments;
       if(args != null){
         //Args are null if the screen is not called by the action button
         if(args.localTechs.length > 0){
           _savedTechs = args.localTechs;
+          _isScreenCalledByNavigator = args.isScreenCalledByNavigator;
         }
       }
 
     }
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Choose youre favorite tools'),
@@ -102,7 +111,17 @@ class SettingsView extends State<SettingsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Add to favorite techs
 
+    //prefs.remove('techs');
     prefs.setStringList('techs', _savedTechs);
+
+    if(_isScreenCalledByNavigator){
+      //If we called this screen by a navigator route (as example the button on home) we want to go back to home
+      Navigator.pop(context);
+    }else{
+      //If we called this screen not by navigator (first screen if there no techs saved on local storage) we want to go to home without a navigation route (without back button)
+      Navigator.pushReplacementNamed(context, "/home", arguments: SettingsScreenArguments(_savedTechs, false));
+    }
+
   }
 
 }
@@ -112,6 +131,7 @@ class SettingsView extends State<SettingsScreen> {
 // title and message.
 class SettingsScreenArguments {
   final List<String> localTechs;
+  final bool isScreenCalledByNavigator;
 
-  SettingsScreenArguments(this.localTechs);
+  SettingsScreenArguments(this.localTechs, this.isScreenCalledByNavigator);
 }
