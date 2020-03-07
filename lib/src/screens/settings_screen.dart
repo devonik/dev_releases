@@ -27,9 +27,10 @@ class SettingsView extends State<SettingsScreen> {
 
           return ListView.builder(
               padding: const EdgeInsets.all(16.0),
-              itemBuilder: /*1*/ (context, i) {
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, i) {
 
-                return _buildRow(snapshot.data[i]);
+                return _buildRow(snapshot.data.elementAt(i));
               });
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");

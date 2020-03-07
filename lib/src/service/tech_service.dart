@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 Future<List<Tech>> fetchTechs() async {
-  final response = await http.get('https://jsonplaceholder.typicode.com/albums');
+  final response = await http.get('http://10.0.2.2:8000/api/tech/getAll');
 
   // If the server did return a 200 OK response, then parse the JSON.
   if (response.statusCode == 200) {
