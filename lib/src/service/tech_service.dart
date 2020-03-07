@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dev_releases/helper/constants.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,7 @@ import 'package:sqflite/sqflite.dart';
 
 
 Future<List<Tech>> fetchTechs() async {
-  final response = await http.get('http://10.0.2.2:8000/api/tech/getAll');
+  final response = await http.get(Constants.BACKEND_URL+'/api/tech/getAll');
 
   // If the server did return a 200 OK response, then parse the JSON.
   if (response.statusCode == 200) {

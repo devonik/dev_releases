@@ -89,7 +89,9 @@ class HomeView extends State<HomeScreen> {
   _navigateToSettingsAndSaveData(BuildContext context) async{
     final result = await Navigator.pushNamed(context, '/settings', arguments: SettingsScreenArguments(favTechIdsStringList, true));
 
-    favTechIdsStringList = result;
+    if(result != null){
+      favTechIdsStringList = result;
+    }
   }
 }
 //Allow the text size to shrink to fit in the space
