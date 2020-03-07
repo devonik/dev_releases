@@ -29,6 +29,7 @@ dependencies:
   mvc_pattern:
   rive: ^0.0.1
   sqflite:
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:

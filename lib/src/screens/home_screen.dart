@@ -3,7 +3,7 @@ import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
-
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -61,27 +61,28 @@ class HomeView extends State<HomeScreen> {
             padding: const EdgeInsets.all(8),
             childAspectRatio: 1,
             children: favTechIdsStringList.map<Widget>((tech){
-            return FutureBuilder<Tech>(
-              future: techRepository.getById(int.parse(tech)),
-              builder: (context, snapshot) {
-              if (snapshot.hasData) {
+              return FutureBuilder<Tech>(
+                future: techRepository.getById(int.parse(tech)),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
 
-                return _GridListTechItem(
-                  tech: snapshot.data
-                );
+                    return _GridListTechItem(
+                      tech: snapshot.data
+                    );
 
-            } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-            }
-              return Center(
-              child: FlareActor("assets/animations/CircularProgressIndicator.flr",
-              animation: "Loading",
-              color: Colors.blueGrey
-              ),
-            );
+                  } else if (snapshot.hasError) {
 
-            },
-            );
+                    return Text("${snapshot.error}");
+                  }
+                  return Center(
+                    child: FlareActor("assets/animations/CircularProgressIndicator.flr",
+                        animation: "Loading",
+                        color: Colors.blueGrey
+                    ),
+                  );
+
+                },
+              );
             }).toList(),
           ),
       );
@@ -119,14 +120,20 @@ class _GridListTechItem extends StatelessWidget {
 
   final Tech tech;
 
+
   @override
   Widget build(BuildContext context) {
+    DateTime _techParsedUpdatedAt = DateTime.parse(tech.updatedAt);
+    var _formatter = new DateFormat('dd.MM.yyyy');
+    String _techUpdatedAtString = _formatter.format(_techParsedUpdatedAt);
+
     final Widget image = Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       clipBehavior: Clip.antiAlias,
       child: Image.network(
          tech.heroImage
       ),
+
     );
 
     return GridTile(
@@ -139,7 +146,7 @@ class _GridListTechItem extends StatelessWidget {
         child: GridTileBar(
           backgroundColor: Colors.black45,
           title: _GridTitleText(tech.title),
-          subtitle: _GridTitleText(tech.latestTag),
+          subtitle: _GridTitleText(tech.latestTag + " ("+_techUpdatedAtString+")")
         ),
       ),
       child: image,
