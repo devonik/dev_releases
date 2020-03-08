@@ -1,6 +1,7 @@
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
+import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:intl/intl.dart';
@@ -129,10 +130,20 @@ class _GridListTechItem extends StatelessWidget {
       child: Image.network(
          tech.heroImage
       ),
-
     );
 
     return GridTile(
+      child: new InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TechDetailScreen(tech: tech),
+            ),
+          );
+        },
+        child: image,
+      ),
       footer: Material(
         color: Colors.transparent,
         shape: RoundedRectangleBorder(
@@ -145,7 +156,6 @@ class _GridListTechItem extends StatelessWidget {
           subtitle: _GridTitleText(tech.latestTag + " ("+_techPublishedAtString+")")
         ),
       ),
-      child: image,
     );
   }
 }
