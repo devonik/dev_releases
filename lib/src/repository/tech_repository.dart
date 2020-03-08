@@ -32,6 +32,9 @@ class TechRepository {
       return Tech(
         id: maps[i]['id'],
         githubReleaseId: maps[i]['githubReleaseId'],
+        githubLink: maps[i]['githubLink'],
+        releasePublishedAt: maps[i]['releasePublishedAt'],
+        body: maps[i]['body'],
         title: maps[i]['title'],
         heroImage: maps[i]['heroImage'],
         latestTag: maps[i]['latestTag'],

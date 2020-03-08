@@ -14,7 +14,21 @@ class DBProvider {
       // When the database is first created, create a table to store dogs.
       onCreate: (db, version) {
         return db.execute(
-            "CREATE TABLE techs(id INTEGER PRIMARY KEY, githubReleaseId INTEGER, title TEXT, heroImage LONGTEXT, latestTag TEXT, githubOwner TEXT, githubRepo TEXT, createdAt TEXT, updatedAt TEXT)"
+            "CREATE TABLE techs"
+                "("
+                  "id INTEGER PRIMARY KEY, "
+                  "githubReleaseId INTEGER, "
+                  "githubLink TEXT, "
+                  "releasePublishedAt TEXT, "
+                  "body LONGTEXT, "
+                  "title TEXT, "
+                  "heroImage TEXT, "
+                  "latestTag TEXT, "
+                  "githubOwner TEXT, "
+                  "githubRepo TEXT, "
+                  "createdAt TEXT, "
+                  "updatedAt TEXT"
+                ")"
         );
       },
       // Set the version. This executes the onCreate function and provides a

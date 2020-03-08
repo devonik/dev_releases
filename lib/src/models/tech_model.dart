@@ -1,6 +1,9 @@
 class Tech {
   final int id;
   final int githubReleaseId;
+  final String githubLink;
+  final String releasePublishedAt;
+  final String body;
   final String title;
   final String heroImage;
   final String latestTag;
@@ -9,13 +12,16 @@ class Tech {
   final String createdAt;
   final String updatedAt;
 
-  Tech({this.id, this.githubReleaseId, this.title, this.heroImage, this.latestTag, this.githubOwner,
+  Tech({this.id, this.githubReleaseId, this.githubLink, this.releasePublishedAt, this.body, this.title, this.heroImage, this.latestTag, this.githubOwner,
       this.githubRepo, this.createdAt, this.updatedAt});
 
   factory Tech.fromJson(Map<String, dynamic> json) {
     return Tech(
       id: json['id'],
       githubReleaseId: json['github_release_id'],
+      githubLink: json['github_link'],
+      releasePublishedAt: json['release_published_at'],
+      body: json['body'],
       title: json['title'],
       heroImage: json['hero_image'],
       latestTag: json['latest_tag'],
@@ -29,6 +35,9 @@ class Tech {
   factory Tech.fromMap(Map<String, dynamic> map) => new Tech(
         id: map['id'],
         githubReleaseId: map['githubReleaseId'],
+        githubLink: map['githubLink'],
+        releasePublishedAt: map['releasePublishedAt'],
+        body: map['body'],
         title: map['title'],
         heroImage: map['heroImage'],
         latestTag: map['latestTag'],
@@ -45,6 +54,9 @@ class Tech {
     return {
       'id': id,
       'githubReleaseId': githubReleaseId,
+      'githubLink': githubLink,
+      'releasePublishedAt': releasePublishedAt,
+      'body': body,
       'title': title,
       'heroImage': heroImage,
       'latestTag': latestTag,

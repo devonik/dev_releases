@@ -22,10 +22,6 @@ class HomeView extends State<HomeScreen> {
 
   List<String> favTechIdsStringList;
 
-
-  List<Tech> dbTechList = [];
-
-
   @override
   Widget build(BuildContext context) {
     // Extract the arguments from the current ModalRoute settings and cast
@@ -123,9 +119,9 @@ class _GridListTechItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime _techParsedUpdatedAt = DateTime.parse(tech.updatedAt);
+    DateTime _techParsedPublishedAt = DateTime.parse(tech.releasePublishedAt);
     var _formatter = new DateFormat('dd.MM.yyyy');
-    String _techUpdatedAtString = _formatter.format(_techParsedUpdatedAt);
+    String _techPublishedAtString = _formatter.format(_techParsedPublishedAt);
 
     final Widget image = Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -146,7 +142,7 @@ class _GridListTechItem extends StatelessWidget {
         child: GridTileBar(
           backgroundColor: Colors.black45,
           title: _GridTitleText(tech.title),
-          subtitle: _GridTitleText(tech.latestTag + " ("+_techUpdatedAtString+")")
+          subtitle: _GridTitleText(tech.latestTag + " ("+_techPublishedAtString+")")
         ),
       ),
       child: image,
