@@ -39,6 +39,7 @@ class HomeView extends State<HomeScreen> {
       }
 
     }
+
       return Scaffold(
           appBar: AppBar(
             title: Text('Startup Name Generator'),
@@ -51,39 +52,37 @@ class HomeView extends State<HomeScreen> {
               ),
             ],
           ),
-          body: GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            padding: const EdgeInsets.all(8),
-            childAspectRatio: 1,
-            children: favTechIdsStringList.map<Widget>((tech){
-              return FutureBuilder<Tech>(
-                future: techRepository.getById(int.parse(tech)),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+          body: FutureBuilder<List<Tech>>(
+            future: techRepository.getByIds(favTechIdsStringList.join(",")),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return GridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    padding: const EdgeInsets.all(8),
+                    childAspectRatio: 1,
+                    children: snapshot.data.map<Widget>((tech){
+                      return _GridListTechItem(
+                        tech: tech
+                      );
+                    }).toList()
+                );
+              }else if (snapshot.hasError) {
 
-                    return _GridListTechItem(
-                      tech: snapshot.data
-                    );
-
-                  } else if (snapshot.hasError) {
-
-                    return Text("${snapshot.error}");
-                  }
-                  return Center(
-                    child: FlareActor("assets/animations/CircularProgressIndicator.flr",
-                        animation: "Loading",
-                        color: Colors.blueGrey
-                    ),
-                  );
-
-                },
-              );
-            }).toList(),
+                return Text("${snapshot.error}");
+              }
+                return Center(
+                  child: FlareActor("assets/animations/CircularProgressIndicator.flr",
+                    animation: "Loading",
+                    color: Colors.blueGrey
+                  ),
+                );
+            }
           ),
       );
     }
+
   _navigateToSettingsAndSaveData(BuildContext context) async{
     final result = await Navigator.pushNamed(context, '/settings', arguments: SettingsScreenArguments(favTechIdsStringList, true));
 

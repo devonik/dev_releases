@@ -53,13 +53,44 @@ class TechRepository {
 
     List<Map> results = await db.query("techs",
         where: 'id = ?',
-        whereArgs: [id]);
+        whereArgs: [id]
+    );
 
     if (results.length > 0) {
       return Tech.fromMap(results.first);
     }
 
     return null;
+  }
+
+  // A method that retrieves all the dogs from the dogs table.
+  Future<List<Tech>> getByIds(String ids) async {
+    // Get a reference to the database.
+    final Database db = await dbProvider.getDatabase();
+
+    final List<Map<String, dynamic>> results = await db.query("techs",
+        where: 'id IN ('+ids+')',
+        orderBy: 'releasePublishedAt desc'
+    );
+
+    // Convert the List<Map<String, dynamic> into a List<Dog>.
+    return List.generate(results.length, (i) {
+      return Tech(
+        id: results[i]['id'],
+        githubReleaseId: results[i]['githubReleaseId'],
+        githubLink: results[i]['githubLink'],
+        releasePublishedAt: results[i]['releasePublishedAt'],
+        body: results[i]['body'],
+        title: results[i]['title'],
+        heroImage: results[i]['heroImage'],
+        latestTag: results[i]['latestTag'],
+        githubOwner: results[i]['githubOwner'],
+        githubRepo: results[i]['githubRepo'],
+        createdAt: results[i]['createdAt'],
+        updatedAt: results[i]['updatedAt'],
+      );
+    });
+
   }
 
   Future<void> deleteTechById(int id) async {
