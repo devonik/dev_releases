@@ -19,6 +19,21 @@ class TechRepository {
     );
   }
 
+  Future<void> updateTech(Tech tech) async {
+    // Get a reference to the database.
+    final Database db = await dbProvider.getDatabase();
+
+    // Update the given Dog.
+    await db.update(
+      'techs',
+      tech.toMap(),
+      // Ensure that the Dog has a matching id.
+      where: "id = ?",
+      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      whereArgs: [tech.id],
+    );
+  }
+
   // A method that retrieves all the dogs from the dogs table.
   Future<List<Tech>> getAll() async {
     // Get a reference to the database.

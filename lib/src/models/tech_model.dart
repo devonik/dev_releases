@@ -45,7 +45,6 @@ class Tech {
         githubRepo: map['githubRepo'],
         createdAt: map['createdAt'],
         updatedAt: map['updatedAt']
-
   );
 
   // Convert a Dog into a Map. The keys must correspond to the names of the
