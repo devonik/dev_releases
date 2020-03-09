@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "189793470160",
+    "firebase_url": "https://dev-releases.firebaseio.com",
+    "project_id": "dev-releases",
+    "storage_bucket": "dev-releases.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189793470160:android:77ca880790b5bda34940d5",
+        "android_client_info": {
+          "package_name": "devnik.dev_releases"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189793470160-safrvarfu0i7nse0t095a7hnrfh7fcdu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "devnik.dev_releases",
+            "certificate_hash": "a537a99c5ef9af0452f491d588eb30baea1e8e90"
+          }
+        },
+        {
+          "client_id": "189793470160-q17j26g9vj3k8p2cucecu79kep94bav2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpGz0gqFFCdE9vyuJP0CYrpQsdNAv2OX4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189793470160-q17j26g9vj3k8p2cucecu79kep94bav2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
