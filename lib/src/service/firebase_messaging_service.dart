@@ -74,6 +74,8 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, BuildContext 
 
     },
     onResume: (Map<String, dynamic> message) async {
+      //TODO Prevent notification if the user does not have the tech as favorite
+      //TODO update tech when the notification were called from background (here)
       print("onResume: $message");
       showDialog(
           context: context,
@@ -94,7 +96,7 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, BuildContext 
       .listen((IosNotificationSettings settings) {
     print("Settings registered: $settings");
   });
-  
+
   _firebaseMessaging.getToken().then((String token) {
     assert(token != null);
     print("Push Messaging token: $token");
