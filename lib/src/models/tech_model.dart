@@ -15,6 +15,23 @@ class Tech {
   Tech({this.id, this.githubReleaseId, this.githubLink, this.releasePublishedAt, this.body, this.title, this.heroImage, this.latestTag, this.githubOwner,
       this.githubRepo, this.createdAt, this.updatedAt});
 
+  factory Tech.fromFirebaseMessage(Map<String, dynamic> json) {
+    return Tech(
+        id: int.parse(json['id']),
+        githubReleaseId: int.parse(json['github_release_id']),
+        githubLink: json['github_link'],
+        releasePublishedAt: json['release_published_at'],
+        body: json['body'],
+        title: json['title'],
+        heroImage: json['hero_image'],
+        latestTag: json['latest_tag'],
+        githubOwner: json['github_owner'],
+        githubRepo: json['github_repo'],
+        createdAt: json['created_at'],
+        updatedAt: json['updated_at']
+    );
+  }
+
   factory Tech.fromJson(Map<String, dynamic> json) {
     return Tech(
       id: json['id'],

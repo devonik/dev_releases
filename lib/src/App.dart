@@ -25,17 +25,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  TechRepository techRepository = new TechRepository();
   String _homeScreenText = "Waiting for token...";
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-
-  void fcmSubscribe(String topic) {
-    _firebaseMessaging.subscribeToTopic(topic);
-  }
-
-  void fcmUnSubscribe(String topic) {
-    _firebaseMessaging.unsubscribeFromTopic(topic);
-  }
 
   final List<String> favTechIdsStringList;
 
@@ -44,41 +34,8 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    fcmSubscribe('new-tech-release');
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        Tech tech;
-        if (message.containsKey('data')) {
-          // Handle data message
-          final dynamic data = message['data'];
-          if(favTechIdsStringList.contains(data['id'].toString())){
-            techRepository.updateTech(Tech.fromJson(data));
-            print("Tech id" + data['id'] + "got an update");
-          }
-        }
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-      },
-    );
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(
-            sound: true, badge: true, alert: true, provisional: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-    _firebaseMessaging.getToken().then((String token) {
-      assert(token != null);
-      setState(() {
-        _homeScreenText = "Push Messaging token: $token";
-      });
-      print(_homeScreenText);
-    });
+    firebaseMessagingSubscribe('new-tech-release');
+    firebaseMessagingConfigure(favTechIdsStringList, context);
   }
 
   @override
