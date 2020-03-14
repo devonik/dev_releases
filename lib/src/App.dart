@@ -25,18 +25,12 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  String _homeScreenText = "Waiting for token...";
 
   final List<String> favTechIdsStringList;
 
   _AppState({this.favTechIdsStringList});
 
-  @override
-  void initState() {
-    super.initState();
-    firebaseMessagingSubscribe('new-tech-release');
-    firebaseMessagingConfigure(favTechIdsStringList, context);
-  }
+
 
   @override
   Widget build(BuildContext context) {

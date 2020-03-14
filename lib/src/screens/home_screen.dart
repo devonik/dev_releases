@@ -2,6 +2,7 @@ import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
+import 'package:dev_releases/src/service/firebase_messaging_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:intl/intl.dart';
@@ -17,11 +18,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeView extends State<HomeScreen> {
+
+  String _homeScreenText = "Waiting for token...";
   HomeView(this.favTechIdsStringList);
 
   TechRepository techRepository = new TechRepository();
 
   List<String> favTechIdsStringList;
+
+  @override
+  void initState() {
+    super.initState();
+    firebaseMessagingSubscribe('new-tech-release');
+    firebaseMessagingConfigure(favTechIdsStringList, this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +100,7 @@ class HomeView extends State<HomeScreen> {
       favTechIdsStringList = result;
     }
   }
+
 }
 //Allow the text size to shrink to fit in the space
 class _GridTitleText extends StatelessWidget {

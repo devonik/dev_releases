@@ -117,9 +117,14 @@ class SettingsView extends State<SettingsScreen> {
       techRepository.getById(id).then((value) {
         if(value == null){
           //The item is not in our local database yet - lets save it
-          Tech itemToSave = _remoteTechData.singleWhere((item) => item.id == id);
-          techRepository.insertTech(itemToSave);
+          Tech itemToInsert = _remoteTechData.singleWhere((item) => item.id == id);
+          techRepository.insertTech(itemToInsert);
+        }else{
+          //If we have the tech in our database lets update it to latest
+          Tech itemToUpdate = _remoteTechData.singleWhere((item) => item.id == id);
+          techRepository.updateTech(itemToUpdate);
         }
+
       });
 
     }
