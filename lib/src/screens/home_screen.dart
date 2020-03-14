@@ -46,6 +46,8 @@ class HomeView extends State<HomeScreen> {
         //Args are null if the screen is not called by the action button
         if(args.favTechIdsStringList.length > 0){
           favTechIdsStringList = args.favTechIdsStringList;
+          //Update UI
+          this.setState((){});
         }
       }
 
