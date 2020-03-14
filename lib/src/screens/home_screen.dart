@@ -5,6 +5,7 @@ import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -57,6 +58,13 @@ class HomeView extends State<HomeScreen> {
           appBar: AppBar(
             title: Text('Startup Name Generator'),
             actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.error),
+                  onPressed: () {
+                    //Test crashlytics firebase report
+                    Crashlytics.instance.crash();
+                  }
+              ),
               IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () {
