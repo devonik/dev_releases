@@ -98,6 +98,8 @@ class HomeView extends State<HomeScreen> {
 
     if(result != null){
       favTechIdsStringList = result;
+      //Reload view
+      //this.setState((){});
     }
   }
 

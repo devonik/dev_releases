@@ -5,7 +5,9 @@ import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-Future<dynamic> firebaseMessagingBackgroundHandler(Map<String, dynamic> message) {
+Future<dynamic> backgroundHandle(Map<String, dynamic> message) {
+  //This method name has to be 'backgroundHandle' otherwise we get java.lang.Integer cannot be cast to java.lang.Long on startup
+  //See here: https://github.com/FirebaseExtended/flutterfire/issues/170
   if (message.containsKey('data')) {
     // Handle data message
     final dynamic data = message['data'];
@@ -33,6 +35,7 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView home
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   _firebaseMessaging.configure(
     onMessage: (Map<String, dynamic> message) async {
+      print("firebase_messaging onMessage called");
       Tech tech;
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
@@ -46,9 +49,9 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView home
         }
       }
     },
-    onBackgroundMessage: firebaseMessagingBackgroundHandler,
+    onBackgroundMessage: backgroundHandle,
     onLaunch: (Map<String, dynamic> message) async {
-      print("onLaunch: $message");
+      print("firebase_messaging onLaunch called");
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
         if(data['message_identifier'] == "new-tech-release") {
@@ -64,12 +67,15 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView home
     },
     onResume: (Map<String, dynamic> message) async {
       //This method is called when the app is in the background but its on standby
-      print("onResume: $message");
+      print("firebase_messaging onResume called");
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
         if(data['message_identifier'] == "new-tech-release") {
           if (favTechIdsStringList.contains(data['id'].toString())) {
-            updateTechFromNotificationData(data);
+            if(updateTechFromNotificationData(data)){
+              // ignore: invalid_use_of_protected_member
+              homeView.setState((){});
+            }
           }
         }
       }
