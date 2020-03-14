@@ -1,11 +1,11 @@
 
 
+import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flare_flutter/flare_actor.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -37,12 +37,7 @@ class SettingsView extends State<SettingsScreen> {
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
-      return Center(
-          child: FlareActor("assets/animations/CircularProgressIndicator.flr",
-              animation: "Loading",
-              color: Colors.blueGrey
-          ),
-        );
+      return buildRiveLoadingCircle();
 
       },
     );

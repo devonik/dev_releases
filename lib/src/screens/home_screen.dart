@@ -1,11 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,36 +63,36 @@ class HomeView extends State<HomeScreen> {
               ),
             ],
           ),
-          body: FutureBuilder<List<Tech>>(
-            future: techRepository.getByIds(favTechIdsStringList.join(",")),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    padding: const EdgeInsets.all(8),
-                    childAspectRatio: 1,
-                    children: snapshot.data.map<Widget>((tech){
-                      return _GridListTechItem(
-                        tech: tech
-                      );
-                    }).toList()
-                );
-              }else if (snapshot.hasError) {
-
-                return Text("${snapshot.error}");
-              }
-                return Center(
-                  child: FlareActor("assets/animations/CircularProgressIndicator.flr",
-                    animation: "Loading",
-                    color: Colors.blueGrey
-                  ),
-                );
-            }
-          ),
+          body: _buildGrid()
       );
     }
+
+  Widget _buildGrid() {
+    return FutureBuilder<List<Tech>>(
+        future: techRepository.getByIds(favTechIdsStringList.join(",")),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                padding: const EdgeInsets.all(8),
+                childAspectRatio: 1,
+                children: snapshot.data.map<Widget>((tech){
+                  return _GridListTechItem(
+                      tech: tech
+                  );
+                }).toList()
+            );
+          }else if (snapshot.hasError) {
+
+            return Text("${snapshot.error}");
+          }
+          return buildRiveLoadingCircle();
+        }
+    );
+
+  }
 
   _navigateToSettingsAndSaveData(BuildContext context) async{
     final result = await Navigator.pushNamed(context, '/settings', arguments: SettingsScreenArguments(favTechIdsStringList, true));
@@ -140,8 +140,10 @@ class _GridListTechItem extends StatelessWidget {
     final Widget image = Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       clipBehavior: Clip.antiAlias,
-      child: Image.network(
-         tech.heroImage
+      child: CachedNetworkImage(
+        imageUrl: tech.heroImage,
+        placeholder: (context, url) => buildRiveLoadingCircle(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
       ),
     );
 
