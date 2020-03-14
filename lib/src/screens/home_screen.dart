@@ -3,6 +3,7 @@ import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:intl/intl.dart';
@@ -53,7 +54,7 @@ class HomeView extends State<HomeScreen> {
       return Scaffold(
           appBar: AppBar(
             title: Text('Startup Name Generator'),
-            actions: <Widget>[      // Add 3 lines from here...
+            actions: <Widget>[
               IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () {
