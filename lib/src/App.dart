@@ -1,14 +1,7 @@
 
-import 'package:dev_releases/src/models/tech_model.dart';
-import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
-import 'package:dev_releases/src/service/firebase_messaging_service.dart';
-import 'package:dev_releases/src/service/tech_service.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatefulWidget {
   static MaterialApp _app;
