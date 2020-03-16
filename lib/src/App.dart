@@ -1,4 +1,5 @@
 
+import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -41,9 +42,9 @@ class _AppState extends State<App> {
         home: _defaultScreen,
         routes: <String, WidgetBuilder>{
           // Set routes for using the Navigator.
-          '/home': (BuildContext context) =>
-          new HomeScreen(favTechIdsStringList),
-          '/settings': (BuildContext context) => new SettingsScreen()
+          '/home': (BuildContext context) => new HomeScreen(favTechIdsStringList),
+          '/settings': (BuildContext context) => new SettingsScreen(),
+          '/addTech': (BuildContext context) => new AddTechScreen()
         });
   }
 }

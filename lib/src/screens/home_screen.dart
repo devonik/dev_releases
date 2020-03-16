@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
+import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
@@ -27,6 +28,7 @@ class HomeView extends State<HomeScreen> {
   TechRepository techRepository = new TechRepository();
 
   List<String> favTechIdsStringList;
+  List<Tech> favTechList;
 
   @override
   void initState() {
@@ -66,6 +68,12 @@ class HomeView extends State<HomeScreen> {
                   }
               ),
               IconButton(
+                  icon: Icon(Icons.add_circle_outline),
+                  onPressed: () {
+                    _navigateToAddAndSaveData(context);
+                  }
+              ),
+              IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () {
                     _navigateToSettingsAndSaveData(context);
@@ -82,13 +90,14 @@ class HomeView extends State<HomeScreen> {
         future: techRepository.getByIds(favTechIdsStringList.join(",")),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            favTechList = snapshot.data;
             return GridView.count(
                 crossAxisCount: 2,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
                 padding: const EdgeInsets.all(8),
                 childAspectRatio: 1,
-                children: snapshot.data.map<Widget>((tech){
+                children: favTechList.map<Widget>((tech){
                   return _GridListTechItem(
                       tech: tech
                   );
@@ -112,6 +121,15 @@ class HomeView extends State<HomeScreen> {
       //Reload view
       //this.setState((){});
     }
+  }
+  _navigateToAddAndSaveData(BuildContext context) async{
+    final result = await Navigator.pushNamed(context, '/addTech', arguments: AddTechScreenArguments(favTechList));
+
+    //if(result != null){
+    //  favTechIdsStringList = result;
+      //Reload view
+      //this.setState((){});
+    //}
   }
 
 }
