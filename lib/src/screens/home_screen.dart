@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dev_releases/src/helper/global_widgets.dart';
+import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/add_tech_screen.dart';
@@ -44,7 +45,7 @@ class HomeView extends State<HomeScreen> {
     var route = ModalRoute.of(context);
     //Avoid null exception if the screen is not called by navigator
     if(route!=null){
-      final SettingsScreenArguments args = route.settings.arguments;
+      final TechScreenArguments args = route.settings.arguments;
       if(args != null){
         //Args are null if the screen is not called by the action button
         if(args.favTechIdsStringList.length > 0){
@@ -114,7 +115,7 @@ class HomeView extends State<HomeScreen> {
   }
 
   _navigateToSettingsAndSaveData(BuildContext context) async{
-    final result = await Navigator.pushNamed(context, '/settings', arguments: SettingsScreenArguments(favTechIdsStringList, true));
+    final result = await Navigator.pushNamed(context, '/settings', arguments: TechScreenArguments(favTechIdsStringList, true));
 
     if(result != null){
       favTechIdsStringList = result;
@@ -123,13 +124,13 @@ class HomeView extends State<HomeScreen> {
     }
   }
   _navigateToAddAndSaveData(BuildContext context) async{
-    final result = await Navigator.pushNamed(context, '/addTech', arguments: AddTechScreenArguments(favTechList));
+    final result = await Navigator.pushNamed(context, '/addTech', arguments: TechScreenArguments(favTechIdsStringList, true));
 
-    //if(result != null){
-    //  favTechIdsStringList = result;
+    if(result != null){
+      favTechIdsStringList = result;
       //Reload view
       //this.setState((){});
-    //}
+    }
   }
 
 }
@@ -168,11 +169,11 @@ class _GridListTechItem extends StatelessWidget {
     final Widget image = Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       clipBehavior: Clip.antiAlias,
-      child: CachedNetworkImage(
+      child: tech.heroImage != null ? CachedNetworkImage(
         imageUrl: tech.heroImage,
         placeholder: (context, url) => buildRiveLoadingCircle(),
         errorWidget: (context, url, error) => Icon(Icons.error),
-      ),
+      ) : Image.asset('assets/icon/fancy_github.png'),
     );
 
     return GridTile(

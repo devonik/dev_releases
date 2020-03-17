@@ -1,6 +1,7 @@
 
 
 import 'package:dev_releases/src/helper/global_widgets.dart';
+import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
@@ -79,7 +80,7 @@ class SettingsView extends State<SettingsScreen> {
     var route = ModalRoute.of(context);
     //Avoid null exception if the screen is not called by navigator
     if(route!=null){
-      final SettingsScreenArguments args = route.settings.arguments;
+      final TechScreenArguments args = route.settings.arguments;
       //Args are null if the screen is not called by the action button
       if(args != null){
         _isScreenCalledByNavigator = args.isScreenCalledByNavigator;
@@ -131,19 +132,9 @@ class SettingsView extends State<SettingsScreen> {
       Navigator.pop(context, _favTechIdsStringList);
     }else{
       //If we called this screen not by navigator (first screen if there no techs saved on local storage) we want to go to home without a navigation route (without back button)
-      Navigator.pushReplacementNamed(context, "/home", arguments: SettingsScreenArguments(_favTechIdsStringList, false));
+      Navigator.pushReplacementNamed(context, "/home", arguments: TechScreenArguments(_favTechIdsStringList, false));
     }
 
   }
 
-}
-
-// You can pass any object to the arguments parameter.
-// In this example, create a class that contains a customizable
-// title and message.
-class SettingsScreenArguments {
-  final List<String> favTechIdsStringList;
-  final bool isScreenCalledByNavigator;
-
-  SettingsScreenArguments(this.favTechIdsStringList, this.isScreenCalledByNavigator);
 }

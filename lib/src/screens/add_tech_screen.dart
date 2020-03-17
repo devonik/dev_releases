@@ -3,6 +3,8 @@
 import 'dart:ffi';
 
 import 'package:dev_releases/src/helper/global_widgets.dart';
+import 'package:dev_releases/src/helper/screen_arguments.dart';
+import 'package:dev_releases/src/models/add_tech_response.dart';
 import 'package:dev_releases/src/models/github_repo_model.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
@@ -21,8 +23,8 @@ class AddTechScreen extends StatefulWidget {
 
 class AddTechView extends State<AddTechScreen> {
   ProgressDialog pr;
-  List<Tech> _favTechList = [];
-  List<GithubRepo> _githubRepoSelected = [];
+  List<String> _favTechIdsStringList = [];
+  GithubRepo _githubRepoSelected;
   List<GithubRepo> _githubRepoList = [];
   //GithubRepo _placeholderRepoList = new GithubRepo(displayName: "Type 3 characters to search");
 
@@ -53,11 +55,11 @@ class AddTechView extends State<AddTechScreen> {
     var route = ModalRoute.of(context);
     //Avoid null exception if the screen is not called by navigator
     if(route!=null){
-      final AddTechScreenArguments args = route.settings.arguments;
+      final TechScreenArguments args = route.settings.arguments;
       //Args are null if the screen is not called by the action button
       if(args != null){
-        if(args.favTechList.length > 0){
-          _favTechList = args.favTechList;
+        if(args.favTechIdsStringList.length > 0){
+          _favTechIdsStringList = args.favTechIdsStringList;
         }
       }
 
@@ -70,7 +72,7 @@ class AddTechView extends State<AddTechScreen> {
       body: _buildRepoDropdown(),
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.save),
-          onPressed: _pushSaved,
+          onPressed: null,
           tooltip: "Save"
       ),
     );
@@ -110,35 +112,12 @@ class AddTechView extends State<AddTechScreen> {
     );
   }
 
-  Widget _buildRepoListItem(GithubRepo githubRepo){
-    bool isRepoSelected = _githubRepoSelected.contains(githubRepo);
-    return ListTile(
-      title: Text(
-        githubRepo.displayName,
-        style: _biggerFont,
-      ),
-      trailing: Icon(   // Add the lines from here...
-        isRepoSelected ? Icons.favorite : Icons.favorite_border,
-        color: isRepoSelected ? Colors.red : null,
-      ),
-      onTap: () {
-        setState(() {
-          if (isRepoSelected) {
-            _githubRepoSelected.remove(githubRepo);
-          } else {
-            _githubRepoSelected.add(githubRepo);
-          }
-        });
-      },
-    );
-  }
-
   void _filterGithubRepos(String query) {
 
     if(query.isNotEmpty) {
       if (_githubRepoList.length <= 0) {
         //If the list is empty we have to call the api to set our list
-        if(query.length >= 3) {
+        if(query.length >= 7) {
           //Only query if query has minimum 3 character
           pr.show();
           fetchGithubRepos(query).then((result) {
@@ -173,47 +152,120 @@ class AddTechView extends State<AddTechScreen> {
 
   }
 
-  void _pushSaved() async {
-    //Todo send the selected repos to backend and get the entries back
-    /*for(int i = 0; i < _favTechIdsStringList.length; i++){
-      int id = int.parse(_favTechIdsStringList[i]);
-      techRepository.getById(id).then((value) {
-        if(value == null){
-          //The item is not in our local database yet - lets save it
-          Tech itemToInsert = _remoteTechData.singleWhere((item) => item.id == id);
-          techRepository.insertTech(itemToInsert);
-        }else{
-          //If we have the tech in our database lets update it to latest
-          Tech itemToUpdate = _remoteTechData.singleWhere((item) => item.id == id);
-          techRepository.updateTech(itemToUpdate);
+  Widget _buildRepoListItem(GithubRepo githubRepo){
+    return ListTile(
+      title: Text(
+        githubRepo.displayName,
+        style: _biggerFont,
+      ),
+      trailing: Text('Tab to add'),
+      onTap: () {
+        _showConfirmDialog(githubRepo);
+      },
+    );
+  }
+
+  Future<void> _showConfirmDialog(GithubRepo githubRepoSelected) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Youre going to add ['+githubRepoSelected.displayName+'] to our database\n'),
+                  Text('After doing this it will be automatically added to your dashboard'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Nah. I don't want this"),
+                color: Colors.redAccent,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Let's do this"),
+                color: Colors.green,
+                onPressed: () {
+                  _githubRepoSelected = githubRepoSelected;
+                  _addTechToRemote();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+          }
+    );
+  }
+
+  Future<void> _showErrorDialog(AddTechResponse addTechResponse) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Icon(Icons.error),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Sorry. The repository could not be added. Try another one\n'),
+                  Text(
+                      'Error message: ',
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                  ),
+                  Text(
+                      addTechResponse.error,
+                      style: TextStyle(color: Colors.redAccent)
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
         }
+    );
+  }
 
-      });
-
-    }
-    //Todo save the entries in our sqlite database
-    //Todo Also add the ids to our shared preference
-
+  void _addTechToRemote() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    pr.show();
     prefs.setStringList('techs', _favTechIdsStringList);
+    addTech(_githubRepoSelected).then((response){
+      pr.hide();
+      if(response.error == null){
+        //Successfully added the tech to remote
+        Tech newTech = Tech.fromJson(response.tech);
+        //Lets do the following things
 
-    if(_isScreenCalledByNavigator){
-      //If we called this screen by a navigator route (as example the button on home) we want to go back to home
-      Navigator.pop(context, _favTechIdsStringList);
-    }else{
-      //If we called this screen not by navigator (first screen if there no techs saved on local storage) we want to go to home without a navigation route (without back button)
-      Navigator.pushReplacementNamed(context, "/home", arguments: SettingsScreenArguments(_favTechIdsStringList, false));
-    }*/
+        //1. Add the entry to our local sqlite database
+        techRepository.insertTech(newTech).then((response){
+          //2. If we add the tech to our sqlite lets add the id to our shared preference
+          _favTechIdsStringList.add(newTech.id.toString());
+          prefs.setStringList('techs', _favTechIdsStringList);
 
+          //3. Lets go back to home
+          Navigator.pushReplacementNamed(context, "/home", arguments: TechScreenArguments(_favTechIdsStringList, false));
+        });
+      }else{
+          //If there was an error lets display it
+          _showErrorDialog(response);
+      }
+      //pr.hide();
+    });
   }
 
 }
 
-// You can pass any object to the arguments parameter.
-// In this example, create a class that contains a customizable
-// title and message.
-class AddTechScreenArguments {
-  final List<Tech> favTechList;
-
-  AddTechScreenArguments(this.favTechList);
-}
