@@ -69,16 +69,12 @@ class AddTechView extends State<AddTechScreen> {
       appBar: AppBar(
         title: Text('Add your favorite github repository'),
       ),
-      body: _buildRepoDropdown(),
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.save),
-          onPressed: null,
-          tooltip: "Save"
-      ),
+      body: _buildRepoDropdown()
     );
   }
 
   TextEditingController searchEditingController = TextEditingController();
+  String _filterQuery;
   Widget _buildRepoDropdown(){
     return Container(
       child: Column(
@@ -87,15 +83,28 @@ class AddTechView extends State<AddTechScreen> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               onChanged: (value) {
+                _filterQuery = value;
                 _filterGithubRepos(value);
               },
               controller: searchEditingController,
               decoration: InputDecoration(
                   labelText: "Search",
-                  hintText: "Search (at least 3 character)",
-                  prefixIcon: Icon(Icons.search),
+                  hintText: "Type the repository name",
+                  prefixIcon: Icon(Icons.filter_list),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      _initRepoRequest(_filterQuery);
+                    },
+                  )
+              ),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (value){
+                _initRepoRequest(_filterQuery);
+              },
             ),
           ),
           Expanded(
@@ -112,45 +121,46 @@ class AddTechView extends State<AddTechScreen> {
     );
   }
 
-  void _filterGithubRepos(String query) {
-
-    if(query.isNotEmpty) {
-      if (_githubRepoList.length <= 0) {
-        //If the list is empty we have to call the api to set our list
-        if(query.length >= 7) {
-          //Only query if query has minimum 3 character
-          pr.show();
-          fetchGithubRepos(query).then((result) {
-            if (result != null) {
-              setState(() {
-                _githubRepoList = result;
-                pr.hide();
-              });
-            }
+  void _initRepoRequest(String query){
+    //If the list is empty we have to call the api to set our list
+    //if(query.length >= 7) {
+      //Only query if query has minimum 3 character
+      pr.show();
+      fetchGithubRepos(query).then((result) {
+        if (result != null) {
+          setState(() {
+            _githubRepoList = result;
+            pr.hide();
           });
         }
-      } else {
-        //We already request the github api so we have a list to filter local
-        List<GithubRepo> _filteredGithubRepoList = List<GithubRepo>();
-        _githubRepoList.forEach((repo) {
-          if (repo.displayName.contains(query)) {
-            _filteredGithubRepoList.add(repo);
-          }
-        });
-        //The query is empty
-        setState(() {
-          _githubRepoList.clear();
-          _githubRepoList.addAll(_filteredGithubRepoList);
-        });
-      }
-    }else{
+      });
+    //}
+  }
+
+  void _filterGithubRepos(String query) {
+
+    if(query.isEmpty){
       //The query is empty
       setState(() {
         _githubRepoList.clear();
       });
+    }else{
+      //We already request the github api so we have a list to filter local
+      List<GithubRepo> _filteredGithubRepoList = List<GithubRepo>();
+      _githubRepoList.forEach((repo) {
+        if (repo.displayName.contains(query)) {
+          _filteredGithubRepoList.add(repo);
+        }
+      });
+      //The query is empty
+      setState(() {
+        _githubRepoList.clear();
+        _githubRepoList.addAll(_filteredGithubRepoList);
+      });
     }
-
   }
+
+
 
   Widget _buildRepoListItem(GithubRepo githubRepo){
     return ListTile(
@@ -257,13 +267,12 @@ class AddTechView extends State<AddTechScreen> {
           prefs.setStringList('techs', _favTechIdsStringList);
 
           //3. Lets go back to home
-          Navigator.pushReplacementNamed(context, "/home", arguments: TechScreenArguments(_favTechIdsStringList, false));
+          Navigator.pop(context, TechScreenArguments(_favTechIdsStringList, false, 'Thanks for adding ['+_githubRepoSelected.displayName+']'));
         });
       }else{
           //If there was an error lets display it
           _showErrorDialog(response);
       }
-      //pr.hide();
     });
   }
 

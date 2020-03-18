@@ -129,10 +129,10 @@ class SettingsView extends State<SettingsScreen> {
 
     if(_isScreenCalledByNavigator){
       //If we called this screen by a navigator route (as example the button on home) we want to go back to home
-      Navigator.pop(context, _favTechIdsStringList);
+      Navigator.pop(context, TechScreenArguments(_favTechIdsStringList, false, 'Saved settings'));
     }else{
       //If we called this screen not by navigator (first screen if there no techs saved on local storage) we want to go to home without a navigation route (without back button)
-      Navigator.pushReplacementNamed(context, "/home", arguments: TechScreenArguments(_favTechIdsStringList, false));
+      Navigator.pushReplacementNamed(context, "/home", arguments: TechScreenArguments(_favTechIdsStringList, false, 'Saved settings'));
     }
 
   }

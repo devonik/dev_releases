@@ -4,6 +4,7 @@
 class TechScreenArguments {
   final List<String> favTechIdsStringList;
   final bool isScreenCalledByNavigator;
+  final String snackBarText;
 
-  TechScreenArguments(this.favTechIdsStringList, this.isScreenCalledByNavigator);
+  TechScreenArguments(this.favTechIdsStringList, this.isScreenCalledByNavigator, this.snackBarText);
 }

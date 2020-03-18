@@ -7,6 +7,8 @@ import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
+import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
+import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +25,6 @@ class HomeScreen extends StatefulWidget {
 
 class HomeView extends State<HomeScreen> {
 
-  String _homeScreenText = "Waiting for token...";
   HomeView(this.favTechIdsStringList);
 
   TechRepository techRepository = new TechRepository();
@@ -68,17 +69,17 @@ class HomeView extends State<HomeScreen> {
                     Crashlytics.instance.crash();
                   }
               ),
-              IconButton(
-                  icon: Icon(Icons.add_circle_outline),
-                  onPressed: () {
-                    _navigateToAddAndSaveData(context);
-                  }
+              AddTechButtonWidget(
+                favTechIdsStringList: favTechIdsStringList,
+                callback: (favList) => setState(() {
+                  favTechIdsStringList = favList;
+                }),
               ),
-              IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {
-                    _navigateToSettingsAndSaveData(context);
-                  }
+              SettingButtonWidget(
+                favTechIdsStringList: favTechIdsStringList,
+                callback: (favList) => setState(() {
+                  favTechIdsStringList = favList;
+                }),
               ),
             ],
           ),
@@ -113,27 +114,8 @@ class HomeView extends State<HomeScreen> {
     );
 
   }
-
-  _navigateToSettingsAndSaveData(BuildContext context) async{
-    final result = await Navigator.pushNamed(context, '/settings', arguments: TechScreenArguments(favTechIdsStringList, true));
-
-    if(result != null){
-      favTechIdsStringList = result;
-      //Reload view
-      //this.setState((){});
-    }
-  }
-  _navigateToAddAndSaveData(BuildContext context) async{
-    final result = await Navigator.pushNamed(context, '/addTech', arguments: TechScreenArguments(favTechIdsStringList, true));
-
-    if(result != null){
-      favTechIdsStringList = result;
-      //Reload view
-      //this.setState((){});
-    }
-  }
-
 }
+
 //Allow the text size to shrink to fit in the space
 class _GridTitleText extends StatelessWidget {
   const _GridTitleText(this.text);
@@ -203,3 +185,4 @@ class _GridListTechItem extends StatelessWidget {
     );
   }
 }
+
