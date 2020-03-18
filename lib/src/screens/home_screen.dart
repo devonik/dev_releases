@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
@@ -60,7 +61,7 @@ class HomeView extends State<HomeScreen> {
 
       return Scaffold(
           appBar: AppBar(
-            title: Text('Startup Name Generator'),
+            title: Text(Constants.appTitle),
             actions: <Widget>[
               IconButton(
                   icon: Icon(Icons.error),

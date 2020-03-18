@@ -1,19 +1,18 @@
 
+import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatefulWidget {
-  static MaterialApp _app;
-  static String get title => _app.title.toString();
-
   final List<String> favTechIdsStringList;
+
   App({this.favTechIdsStringList});
 
   @override
   _AppState createState() => _AppState(
-      favTechIdsStringList: favTechIdsStringList
+      favTechIdsStringList: favTechIdsStringList,
   );
 
 }
@@ -38,7 +37,7 @@ class _AppState extends State<App> {
       _defaultScreen = new SettingsScreen();
     }
     return MaterialApp(
-        title: 'mvc example',
+        title: Constants.appTitle,
         home: _defaultScreen,
         routes: <String, WidgetBuilder>{
           // Set routes for using the Navigator.
