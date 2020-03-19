@@ -5,9 +5,3 @@ Future<List<String>> fetchLocalTechs() async{
   //Add to favorite techs
   return prefs.getStringList('techs');
 }
-
-Future<bool> isThemeDark() async{
-  final prefs = await SharedPreferences.getInstance();
-  //Add to favorite techs
-  return prefs.getBool('isDark');
-}
