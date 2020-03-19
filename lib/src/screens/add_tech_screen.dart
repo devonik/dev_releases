@@ -1,6 +1,7 @@
 
 
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/helper/screen_arguments.dart';
@@ -10,7 +11,9 @@ import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/github_repo_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
+import 'package:dev_releases/src/widgets/image_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -213,6 +216,33 @@ class AddTechView extends State<AddTechScreen> {
     );
   }
 
+  void _addTechToRemote() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    pr.show();
+    prefs.setStringList('techs', _favTechIdsStringList);
+    addTech(_githubRepoSelected).then((response){
+      pr.hide();
+      if(response.error == null){
+        //Successfully added the tech to remote
+        Tech newTech = Tech.fromJson(response.tech);
+        //Lets do the following things
+
+        //1. Add the entry to our local sqlite database
+        techRepository.insertTech(newTech).then((response){
+          //2. If we add the tech to our sqlite lets add the id to our shared preference
+          _favTechIdsStringList.add(newTech.id.toString());
+          prefs.setStringList('techs', _favTechIdsStringList);
+
+          _showSuccessDialog(newTech);
+        });
+      }else{
+        //If there was an error lets display it
+        _showErrorDialog(response);
+      }
+    });
+  }
+
   Future<void> _showErrorDialog(AddTechResponse addTechResponse) async {
     return showDialog<void>(
         context: context,
@@ -248,33 +278,61 @@ class AddTechView extends State<AddTechScreen> {
     );
   }
 
-  void _addTechToRemote() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    pr.show();
-    prefs.setStringList('techs', _favTechIdsStringList);
-    addTech(_githubRepoSelected).then((response){
-      pr.hide();
-      if(response.error == null){
-        //Successfully added the tech to remote
-        Tech newTech = Tech.fromJson(response.tech);
-        //Lets do the following things
-
-        //1. Add the entry to our local sqlite database
-        techRepository.insertTech(newTech).then((response){
-          //2. If we add the tech to our sqlite lets add the id to our shared preference
-          _favTechIdsStringList.add(newTech.id.toString());
-          prefs.setStringList('techs', _favTechIdsStringList);
-
-          //3. Lets go back to home
-          Navigator.pop(context, TechScreenArguments(_favTechIdsStringList, false, 'Thanks for adding ['+_githubRepoSelected.displayName+']'));
-        });
-      }else{
-          //If there was an error lets display it
-          _showErrorDialog(response);
-      }
-    });
+  Future<void> _showSuccessDialog(Tech newTech) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                'Thank you!',
+                style: TextStyle(color: Colors.green)
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                      "You're awesome\n",
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                  ),
+                  Text("Your favorite repository is saved in our database and also on your dashboard.\n"),
+                  Text("Pleases also select a image for the repository. It will be displayed on your dashboard. \n"),
+                  Text(
+                      "If you don't there is only a placeholder\n",
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                  ),
+                  ImagePickerWidget(callback: (selectedImage) {
+                      Navigator.of(context).pop();
+                      _uploadRepoImage(selectedImage, newTech);
+                  })
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  "I does not have a image :(",
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        }
+    );
   }
 
+  void _uploadRepoImage(File image, Tech tech){
+    pr.show();
+    addImageToTech(image, tech).then((response){
+      techRepository.updateTech(response).then((value){
+        pr.hide();
+        //3. Lets go back to home
+        Navigator.pop(context, TechScreenArguments(_favTechIdsStringList, false, 'Thanks for adding ['+_githubRepoSelected.displayName+']'));
+      });
+    });
+  }
 }
 
