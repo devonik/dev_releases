@@ -5,7 +5,6 @@ import 'package:dev_releases/src/models/github_repo_model.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 
 Future<List<Tech>> fetchTechs() async {
@@ -26,13 +25,6 @@ List<Tech> parseTechs(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<Tech>((json) => Tech.fromJson(json)).toList();
-}
-
-Future<List<String>> fetchLocalTechs() async{
-  final prefs = await SharedPreferences.getInstance();
-  //Add to favorite techs
-  return prefs.getStringList('techs');
-
 }
 
 Future<AddTechResponse> addTech(GithubRepo githubRepo) async {

@@ -8,8 +8,10 @@ import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
+import 'package:dev_releases/src/service/shared_preferences_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
 import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -70,6 +72,13 @@ class HomeView extends State<HomeScreen> {
                     Crashlytics.instance.crash();
                   }
               ),
+              IconButton(
+                  icon: Icon(Icons.colorize),
+                  onPressed: () {
+                    //Test crashlytics firebase report
+                    _changeBrightness(context);
+                  }
+              ),
               AddTechButtonWidget(
                 favTechIdsStringList: favTechIdsStringList,
                 callback: (favList) => setState(() {
@@ -87,6 +96,10 @@ class HomeView extends State<HomeScreen> {
           body: _buildGrid()
       );
     }
+
+  void _changeBrightness(BuildContext context) {
+    DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
+  }
 
   Widget _buildGrid() {
     return FutureBuilder<List<Tech>>(

@@ -1,7 +1,7 @@
 
 import 'dart:async';
 import 'package:dev_releases/src/App.dart';
-import 'package:dev_releases/src/service/tech_service.dart';
+import 'package:dev_releases/src/service/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
