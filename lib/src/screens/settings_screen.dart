@@ -8,6 +8,8 @@ import 'package:dev_releases/src/service/firebase_messaging_service.dart';
 import 'package:dev_releases/src/service/shared_preferences_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
+import 'package:dev_releases/src/widgets/settings_save_button.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -23,10 +25,10 @@ class SettingsScreen extends StatefulWidget {
 class SettingsView extends State<SettingsScreen> {
   ProgressDialog pr;
   List<String> _favTechIdsStringList = [];
+  List<Tech> _remoteTechData = new List();
   final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
   bool _isScreenCalledByNavigator = false;
-  final TechRepository techRepository = new TechRepository();
-  List<Tech> _remoteTechData = new List();
+
 
   @override
   void initState() {
@@ -116,49 +118,21 @@ class SettingsView extends State<SettingsScreen> {
         title: Text('Choose youre favorite tools'),
       ),
       body: _buildSuggestions(),
-      floatingActionButton: Builder(builder: (BuildContext context) {
-        return FloatingActionButton(
-          child: const Icon(Icons.save),
-          onPressed: () {
-            pr.style(message: 'Save data');
-            pr.show();
-            _pushSaved(context);
-          } ,
-          tooltip: "Save"
-        );
-      })
+      floatingActionButton: SaveSettingsButtonWidget(
+        favTechIdsStringList: _favTechIdsStringList,
+        remoteTechData: _remoteTechData,
+        callback: (finish) {
+          print("Setting saving finished: " + finish.toString());
+          _navigateToHome();
+        },
+      )
     );
   }
-  void _pushSaved(BuildContext context) async{
 
-    if(_remoteTechData.length > 0 ) {
 
-      List<Tech> relevantTechList = new List();
-      for (int i = 0; i < _favTechIdsStringList.length; i++) {
-        int id = int.parse(_favTechIdsStringList[i]);
-        relevantTechList.add(
-            _remoteTechData.singleWhere((item) => item.id == id));
-      }
-      await techRepository.insertOrUpdateTechList(relevantTechList).then((response) {
-        setLocalTechs(_favTechIdsStringList).then((response){
-          if(response){
-
-            print("finish");
-            pr.hide();
-            _navigateToHome(context);
-          }
-        });
-      });
-    }else{
-      Scaffold.of(context)
-        ..removeCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text('Please wait for the data')));
-    }
-  }
-
-  void _navigateToHome(BuildContext context){
-
+  void _navigateToHome(){
     if(_isScreenCalledByNavigator){
+      //Navigator.popUntil(context, ModalRoute.withName('/home'));
       //If we called this screen by a navigator route (as example the button on home) we want to go back to home
       Navigator.pop(context, TechScreenArguments(_favTechIdsStringList, false, 'Saved settings'));
     }else{

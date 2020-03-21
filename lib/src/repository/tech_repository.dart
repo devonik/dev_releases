@@ -35,7 +35,6 @@ class TechRepository {
   }
 
   Future<void> insertOrUpdateTechList(List<Tech> remoteTechList) async {
-    final Database db = await dbProvider.getDatabase();
     for(var remoteTech in remoteTechList){
       Tech localTech = await getById(remoteTech.id);
       if(localTech != null){

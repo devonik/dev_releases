@@ -8,5 +8,5 @@ Future<List<String>> fetchLocalTechs() async{
 Future<bool> setLocalTechs(List<String> localTechIdList) async{
   final prefs = await SharedPreferences.getInstance();
   //Add to favorite techs
-  return prefs.setStringList('techs', localTechIdList);
+  return await prefs.setStringList('techs', localTechIdList);
 }
