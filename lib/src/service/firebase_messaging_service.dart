@@ -2,6 +2,7 @@ import 'package:dev_releases/src/App.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -33,13 +34,14 @@ void firebaseMessagingUnSubscribe(String topic) {
 
 void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView homeView){
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   _firebaseMessaging.configure(
     onMessage: (Map<String, dynamic> message) async {
       print("firebase_messaging onMessage called");
       Tech tech;
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
-        if(data['message_identifier'] == "new-tech-release") {
+        if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
           if (favTechIdsStringList.contains(data['id'].toString())) {
             if(updateTechFromNotificationData(data)){
               // ignore: invalid_use_of_protected_member
@@ -54,7 +56,7 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView home
       print("firebase_messaging onLaunch called");
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
-        if(data['message_identifier'] == "new-tech-release") {
+        if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
           if (favTechIdsStringList.contains(data['id'].toString())) {
             if(updateTechFromNotificationData(data)){
               // ignore: invalid_use_of_protected_member
@@ -70,7 +72,7 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView home
       print("firebase_messaging onResume called");
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
-        if(data['message_identifier'] == "new-tech-release") {
+        if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
           if (favTechIdsStringList.contains(data['id'].toString())) {
             if(updateTechFromNotificationData(data)){
               // ignore: invalid_use_of_protected_member
@@ -105,9 +107,7 @@ bool updateTechFromNotificationData(Map<dynamic, dynamic> data){
   try {
     tech = Tech.fromFirebaseMessage(map);
   } catch (ex) {
-    print(
-        "Could not parse firebase message to Tech Model :( [" + ex +
-            "]");
+    Crashlytics.instance.recordError('Could not parse firebase message to Tech Model :(',ex);
     return false;
   }
   try {
@@ -115,7 +115,7 @@ bool updateTechFromNotificationData(Map<dynamic, dynamic> data){
     print("Tech id [" + data['id'] + "] got an update");
     return true;
   } catch (ex) {
-    print("Could not update Tech model:( [" + ex + "]");
+    Crashlytics.instance.recordError('Could not update Tech model from parsed firebase message:(',ex);
     return false;
   }
 }

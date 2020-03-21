@@ -43,6 +43,7 @@ class SettingButtonWidget extends StatelessWidget {
           ..removeCurrentSnackBar()
           ..showSnackBar(SnackBar(content: Text(techScreenArguments.snackBarText)));
       }
+      callback(techScreenArguments.favTechIdsStringList);
     }
   }
 }

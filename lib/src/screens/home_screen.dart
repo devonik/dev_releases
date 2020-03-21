@@ -33,13 +33,14 @@ class HomeView extends State<HomeScreen> {
   TechRepository techRepository = new TechRepository();
 
   List<String> favTechIdsStringList;
-  List<Tech> favTechList;
 
   @override
   void initState() {
     super.initState();
-    firebaseMessagingSubscribe('new-tech-release');
+    //firebaseMessagingSubscribe('new-tech-release');
     firebaseMessagingConfigure(favTechIdsStringList, this);
+    firebaseMessagingSubscribe('new-release-1');
+
   }
 
   @override
@@ -88,12 +89,13 @@ class HomeView extends State<HomeScreen> {
               SettingButtonWidget(
                 favTechIdsStringList: favTechIdsStringList,
                 callback: (favList) => setState(() {
+                  //TODO WHY ITS DONT GET UPDATE - because we have to wait until all techs are saved
                   favTechIdsStringList = favList;
                 }),
               ),
             ],
           ),
-          body: _buildGrid()
+          body: _buildGrid(favTechIdsStringList)
       );
     }
 
@@ -101,19 +103,18 @@ class HomeView extends State<HomeScreen> {
     DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
   }
 
-  Widget _buildGrid() {
+  Widget _buildGrid(List<String> favTechIdsStringList) {
     return FutureBuilder<List<Tech>>(
         future: techRepository.getByIds(favTechIdsStringList.join(",")),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            favTechList = snapshot.data;
             return GridView.count(
                 crossAxisCount: 2,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
                 padding: const EdgeInsets.all(8),
                 childAspectRatio: 1,
-                children: favTechList.map<Widget>((tech){
+                children: snapshot.data.map<Widget>((tech){
                   return _GridListTechItem(
                       tech: tech
                   );

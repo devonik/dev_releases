@@ -12,6 +12,7 @@ import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/github_repo_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/image_picker_widget.dart';
+import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,25 +35,14 @@ class AddTechView extends State<AddTechScreen> {
   final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
   final TechRepository techRepository = new TechRepository();
 
+  @override
+  void initState() {
+    super.initState();
+    pr = new ProgressDialogWidget().init(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    pr = new ProgressDialog(context);
-    pr.style(
-        message: 'Search...',
-        borderRadius: 10.0,
-        backgroundColor: Colors.white,
-        progressWidget: buildRiveLoadingCircle(),
-        elevation: 10.0,
-        insetAnimCurve: Curves.easeInOut,
-        progress: 0.0,
-        maxProgress: 100.0,
-        progressTextStyle: TextStyle(
-            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
-        messageTextStyle: TextStyle(
-            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600)
-    );
-
     // Extract the arguments from the current ModalRoute settings and cast
     // them as ScreenArguments.
     var route = ModalRoute.of(context);
@@ -316,6 +306,7 @@ class AddTechView extends State<AddTechScreen> {
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  navigateToHome('Thanks for adding ['+_githubRepoSelected.displayName+']');
                 },
               )
             ],
@@ -329,10 +320,14 @@ class AddTechView extends State<AddTechScreen> {
     addImageToTech(image, tech).then((response){
       techRepository.updateTech(response).then((value){
         pr.hide();
-        //3. Lets go back to home
-        Navigator.pop(context, TechScreenArguments(_favTechIdsStringList, false, 'Thanks for adding ['+_githubRepoSelected.displayName+']'));
+        navigateToHome('Thanks for adding ['+_githubRepoSelected.displayName+']');
       });
     });
+  }
+
+  void navigateToHome(String snackBarText){
+    //3. Lets go back to home
+    Navigator.pop(context, TechScreenArguments(_favTechIdsStringList, false, snackBarText));
   }
 }
 

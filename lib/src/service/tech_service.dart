@@ -47,7 +47,7 @@ Future<AddTechResponse> addTech(GithubRepo githubRepo) async {
   } else {
     // If the server did not return a 200 CREATED response,
     // then throw an exception.
-    throw Exception('Failed to add tech');
+    throw Exception('Failed to add tech. Response: '+response.body);
   }
 }
 
