@@ -22,6 +22,19 @@ Future<List<Tech>> fetchTechs() async {
   }
 }
 
+Future<List<Tech>> fetchTechsByIdStringList(List<String> favTechStringList) async {
+  final response = await http.get(Constants.backendUrl+'/api/tech/getByIds/'+favTechStringList.join(","));
+
+  // If the server did return a 200 OK response, then parse the JSON.
+  if (response.statusCode == 200) {
+    // Use the compute function to run parsePhotos in a separate isolate.
+    return compute(parseTechs, response.body);
+  } else {
+    // If the server did not return a 200 OK response, then throw an exception.
+    throw Exception('Failed to load techs');
+  }
+}
+
 // A function that converts a response body into a List<Photo>.
 List<Tech> parseTechs(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();

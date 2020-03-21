@@ -39,6 +39,7 @@ dependencies:
   progress_dialog: ^1.2.1
   dynamic_theme: ^1.0.0
   image_picker: ^0.6.3+4
+  pull_to_refresh: ^1.5.7
 
 dev_dependencies:
   flutter_test:

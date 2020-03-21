@@ -9,12 +9,14 @@ import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
 import 'package:dev_releases/src/service/shared_preferences_service.dart';
+import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
 import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -28,6 +30,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeView extends State<HomeScreen> {
 
+  RefreshController _refreshController;
+
   HomeView(this.favTechIdsStringList);
 
   TechRepository techRepository = new TechRepository();
@@ -39,8 +43,34 @@ class HomeView extends State<HomeScreen> {
     super.initState();
     //firebaseMessagingSubscribe('new-tech-release');
     firebaseMessagingConfigure(favTechIdsStringList, this);
-    firebaseMessagingSubscribe('new-release-1');
+    _refreshController = RefreshController(initialRefresh: false);
+  }
 
+  //Pull to refresh
+  //Comes from header
+  void _onRefresh() async{
+    // monitor network fetch
+    fetchTechsByIdStringList(favTechIdsStringList).then((response){
+      if(response != null){
+        techRepository.insertOrUpdateTechList(response).then((response){
+          setState(() {});
+          _refreshController.refreshCompleted();
+        });
+      }
+    });
+  }
+
+  //Pull to refresh
+  //Comes from footer
+  void _onLoading() async{
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    if(mounted)
+      setState(() {
+
+      });
+    _refreshController.loadComplete();
   }
 
   @override
@@ -108,17 +138,25 @@ class HomeView extends State<HomeScreen> {
         future: techRepository.getByIds(favTechIdsStringList.join(",")),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                padding: const EdgeInsets.all(8),
-                childAspectRatio: 1,
-                children: snapshot.data.map<Widget>((tech){
-                  return _GridListTechItem(
-                      tech: tech
-                  );
-                }).toList()
+            return SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: false,
+                header: WaterDropMaterialHeader(),
+                controller: _refreshController,
+                onRefresh: _onRefresh,
+                onLoading: _onLoading,
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  padding: const EdgeInsets.all(8),
+                  childAspectRatio: 1,
+                  children: snapshot.data.map<Widget>((tech){
+                    return _GridListTechItem(
+                        tech: tech
+                    );
+                  }).toList()
+                )
             );
           }else if (snapshot.hasError) {
 
