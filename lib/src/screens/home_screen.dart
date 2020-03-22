@@ -232,7 +232,12 @@ class _GridListTechItem extends StatelessWidget {
         child: GridTileBar(
           backgroundColor: Colors.black45,
           title: _GridTitleText(tech.title),
-          subtitle: _GridTitleText(tech.latestTag + " ("+_techPublishedAtString+")")
+          subtitle: _GridTitleText(
+              "Made by " +
+                  tech.githubOwner +
+                  "\n" +
+                  tech.latestTag + " ("+_techPublishedAtString+")"
+          )
         ),
       ),
     );
