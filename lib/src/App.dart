@@ -5,6 +5,7 @@ import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 
 class App extends StatefulWidget {
   final List<String> favTechIdsStringList;
@@ -37,12 +38,13 @@ class _AppState extends State<App> {
       //If the app is opened first time we have no local techs
       _defaultScreen = new SettingsScreen();
     }
+    FlutterStatusbarcolor.setNavigationBarColor(Theme.of(context).brightness == Brightness.dark ? Colors.black: Colors.blueGrey);
     return new DynamicTheme(
         defaultBrightness: Brightness.light,
         data: (brightness) => new ThemeData(
           primarySwatch: Colors.blueGrey,
           brightness: brightness,
-          fontFamily: 'JetBrainsMono',
+          fontFamily: 'JetBrainsMono'
         ),
         themedWidgetBuilder: (context, theme) {
           return new MaterialApp(

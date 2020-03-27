@@ -15,6 +15,7 @@ import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -131,6 +132,8 @@ class HomeView extends State<HomeScreen> {
 
   void _changeBrightness(BuildContext context) {
     DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
+
+    FlutterStatusbarcolor.setNavigationBarColor(Theme.of(context).brightness == Brightness.dark ? Colors.blueGrey: Colors.black);
   }
 
   Widget _buildGrid(List<String> favTechIdsStringList) {
