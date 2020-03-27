@@ -38,13 +38,14 @@ class _AppState extends State<App> {
       //If the app is opened first time we have no local techs
       _defaultScreen = new SettingsScreen();
     }
-    FlutterStatusbarcolor.setNavigationBarColor(Theme.of(context).brightness == Brightness.dark ? Colors.black: Colors.blueGrey);
+    //Cannot persist it wait for https://github.com/Norbert515/dynamic_theme/issues/43
+    FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
     return new DynamicTheme(
         defaultBrightness: Brightness.light,
         data: (brightness) => new ThemeData(
           primarySwatch: Colors.blueGrey,
           brightness: brightness,
-          fontFamily: 'JetBrainsMono'
+          fontFamily: 'JetBrainsMono',
         ),
         themedWidgetBuilder: (context, theme) {
           return new MaterialApp(
