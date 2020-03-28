@@ -2,6 +2,7 @@ import 'package:dev_releases/src/App.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
+import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +35,10 @@ void firebaseMessagingUnSubscribe(String topic) {
 
 void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView homeView){
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  TechRepository techRepository = new TechRepository();
 
   _firebaseMessaging.configure(
     onMessage: (Map<String, dynamic> message) async {
-      print("firebase_messaging onMessage called");
-      Tech tech;
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
         if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
@@ -53,32 +53,39 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView home
     },
     onBackgroundMessage: backgroundHandle,
     onLaunch: (Map<String, dynamic> message) async {
-      print("firebase_messaging onLaunch called");
+
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
         if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
-          if (favTechIdsStringList.contains(data['id'].toString())) {
-            if(updateTechFromNotificationData(data)){
-              // ignore: invalid_use_of_protected_member
-              homeView.setState((){});
+          //Lets update whole dashboard - may there are multiple updates
+          // monitor network fetch
+          fetchTechsByIdStringList(favTechIdsStringList).then((response){
+            if(response != null){
+              techRepository.insertOrUpdateTechList(response).then((response){
+                // ignore: invalid_use_of_protected_member
+                homeView.setState(() {});
+              });
             }
-          }
+          });
         }
       }
 
     },
     onResume: (Map<String, dynamic> message) async {
       //This method is called when the app is in the background but its on standby
-      print("firebase_messaging onResume called");
       if (message.containsKey('data')) {
         final dynamic data = message['data'];
         if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
-          if (favTechIdsStringList.contains(data['id'].toString())) {
-            if(updateTechFromNotificationData(data)){
-              // ignore: invalid_use_of_protected_member
-              homeView.setState((){});
+          //Lets update whole dashboard - may there are multiple updates
+          // monitor network fetch
+          fetchTechsByIdStringList(favTechIdsStringList).then((response){
+            if(response != null){
+              techRepository.insertOrUpdateTechList(response).then((response){
+                // ignore: invalid_use_of_protected_member
+                homeView.setState(() {});
+              });
             }
-          }
+          });
         }
       }
     },
