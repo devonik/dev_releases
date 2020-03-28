@@ -132,7 +132,6 @@ class HomeView extends State<HomeScreen> {
 
   void _changeBrightness(BuildContext context) {
     DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
-
     FlutterStatusbarcolor.setNavigationBarColor(Theme.of(context).brightness == Brightness.dark ? Colors.blueGrey: Colors.black);
   }
 

@@ -3,6 +3,7 @@ import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
+import 'package:dev_releases/src/service/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
@@ -39,7 +40,14 @@ class _AppState extends State<App> {
       _defaultScreen = new SettingsScreen();
     }
     //Cannot persist it wait for https://github.com/Norbert515/dynamic_theme/issues/43
-    FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
+    fetchIsDark().then((isDark){
+      if(isDark){
+        FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
+      }else{
+        FlutterStatusbarcolor.setNavigationBarColor(Colors.blueGrey);
+      }
+    });
+    //FlutterStatusbarcolor.setNavigationBarColor(Theme.of(context).brightness == Brightness.dark ? Brightness.light: Brightness.dark);
     return new DynamicTheme(
         defaultBrightness: Brightness.light,
         data: (brightness) => new ThemeData(
