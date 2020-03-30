@@ -17,7 +17,6 @@ import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomeScreen extends StatefulWidget {
-
   final List<String> favTechIdsStringList;
 
   HomeScreen(this.favTechIdsStringList);
@@ -27,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeView extends State<HomeScreen> {
-
   RefreshController _refreshController;
 
   HomeView(this.favTechIdsStringList);
@@ -46,11 +44,11 @@ class HomeView extends State<HomeScreen> {
 
   //Pull to refresh
   //Comes from header
-  void _onRefresh() async{
+  void _onRefresh() async {
     // monitor network fetch
-    fetchTechsByIdStringList(favTechIdsStringList).then((response){
-      if(response != null){
-        techRepository.insertOrUpdateTechList(response).then((response){
+    fetchTechsByIdStringList(favTechIdsStringList).then((response) {
+      if (response != null) {
+        techRepository.insertOrUpdateTechList(response).then((response) {
           setState(() {});
           _refreshController.refreshCompleted();
         });
@@ -60,14 +58,11 @@ class HomeView extends State<HomeScreen> {
 
   //Pull to refresh
   //Comes from footer
-  void _onLoading() async{
+  void _onLoading() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    if(mounted)
-      setState(() {
-
-      });
+    if (mounted) setState(() {});
     _refreshController.loadComplete();
   }
 
@@ -77,59 +72,61 @@ class HomeView extends State<HomeScreen> {
     // them as ScreenArguments.
     var route = ModalRoute.of(context);
     //Avoid null exception if the screen is not called by navigator
-    if(route!=null){
+    if (route != null) {
       final TechScreenArguments args = route.settings.arguments;
-      if(args != null){
+      if (args != null) {
         //Args are null if the screen is not called by the action button
-        if(args.favTechIdsStringList.length > 0){
+        if (args.favTechIdsStringList.length > 0) {
           favTechIdsStringList = args.favTechIdsStringList;
           //Update UI
-          this.setState((){});
+          this.setState(() {});
         }
       }
-
     }
 
-      return Scaffold(
-          appBar: AppBar(
-            title: Text(Constants.appTitle),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.error),
-                  onPressed: () {
-                    //Test crashlytics firebase report
-                    Crashlytics.instance.crash();
-                  }
-              ),
-              IconButton(
-                  icon: Icon(Icons.colorize),
-                  onPressed: () {
-                    //Test crashlytics firebase report
-                    _changeBrightness(context);
-                  }
-              ),
-              AddTechButtonWidget(
-                favTechIdsStringList: favTechIdsStringList,
-                callback: (favList) => setState(() {
-                  favTechIdsStringList = favList;
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(Constants.appTitle),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.error),
+                onPressed: () {
+                  //Test crashlytics firebase report
+                  Crashlytics.instance.crash();
                 }),
-              ),
-              SettingButtonWidget(
-                favTechIdsStringList: favTechIdsStringList,
-                callback: (favList) => setState(() {
-                  //TODO WHY ITS DONT GET UPDATE - because we have to wait until all techs are saved
-                  favTechIdsStringList = favList;
+            IconButton(
+                icon: Icon(Icons.colorize),
+                onPressed: () {
+                  //Test crashlytics firebase report
+                  _changeBrightness(context);
                 }),
-              ),
-            ],
-          ),
-          body: _buildGrid(favTechIdsStringList)
-      );
-    }
+            AddTechButtonWidget(
+              favTechIdsStringList: favTechIdsStringList,
+              callback: (favList) => setState(() {
+                favTechIdsStringList = favList;
+              }),
+            ),
+            SettingButtonWidget(
+              favTechIdsStringList: favTechIdsStringList,
+              callback: (favList) => setState(() {
+                //TODO WHY ITS DONT GET UPDATE - because we have to wait until all techs are saved
+                favTechIdsStringList = favList;
+              }),
+            ),
+          ],
+        ),
+        body: _buildGrid(favTechIdsStringList));
+  }
 
   void _changeBrightness(BuildContext context) {
-    DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
-    FlutterStatusbarcolor.setNavigationBarColor(Theme.of(context).brightness == Brightness.dark ? Colors.blueGrey: Colors.black);
+    DynamicTheme.of(context).setBrightness(
+        Theme.of(context).brightness == Brightness.dark
+            ? Brightness.light
+            : Brightness.dark);
+    FlutterStatusbarcolor.setNavigationBarColor(
+        Theme.of(context).brightness == Brightness.dark
+            ? Colors.blueGrey
+            : Colors.black);
   }
 
   Widget _buildGrid(List<String> favTechIdsStringList) {
@@ -145,26 +142,19 @@ class HomeView extends State<HomeScreen> {
                 onRefresh: _onRefresh,
                 onLoading: _onLoading,
                 child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  padding: const EdgeInsets.all(8),
-                  childAspectRatio: 1,
-                  children: snapshot.data.map<Widget>((tech){
-                    return _GridListTechItem(
-                        tech: tech
-                    );
-                  }).toList()
-                )
-            );
-          }else if (snapshot.hasError) {
-
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    padding: const EdgeInsets.all(8),
+                    childAspectRatio: 1,
+                    children: snapshot.data.map<Widget>((tech) {
+                      return _GridListTechItem(tech: tech);
+                    }).toList()));
+          } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
           return buildRiveLoadingCircle();
-        }
-    );
-
+        });
   }
 }
 
@@ -176,7 +166,6 @@ class _GridTitleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: AlignmentDirectional.centerStart,
@@ -186,13 +175,9 @@ class _GridTitleText extends StatelessWidget {
 }
 
 class _GridListTechItem extends StatelessWidget {
-  _GridListTechItem({
-    Key key,
-    @required this.tech
-  }) : super(key: key);
+  _GridListTechItem({Key key, @required this.tech}) : super(key: key);
 
   final Tech tech;
-
 
   @override
   Widget build(BuildContext context) {
@@ -203,14 +188,15 @@ class _GridListTechItem extends StatelessWidget {
     final Widget image = Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       clipBehavior: Clip.antiAlias,
-      child: tech.heroImage != null ? FadeInImage(
-        fit: BoxFit.scaleDown,
-        placeholder: AssetImage('assets/icon/fancy_github.png'),
-        image: CacheImage(tech.heroImage)
-      ): Image.asset('assets/icon/fancy_github.png'),
+      child: tech.heroImage != null
+          ? FadeInImage(
+              fit: BoxFit.scaleDown,
+              placeholder: AssetImage('assets/icon/fancy_github.png'),
+              image: CacheImage(tech.heroImage))
+          : Image.asset('assets/icon/fancy_github.png'),
     );
     //OLD WAY: Done with cache_network_image. But there were an error
-      /*tech.heroImage != null ? CachedNetworkImage(
+    /*tech.heroImage != null ? CachedNetworkImage(
         imageUrl: tech.heroImage,
         placeholder: (context, url) => buildRiveLoadingCircle(),
         errorWidget: (context, url, error) => Icon(Icons.error),
@@ -221,8 +207,10 @@ class _GridListTechItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TechDetailScreen(tech: tech),
-            ),
+              builder: (context) => TechDetailScreen(
+                  tech: tech
+            )
+            )
           );
         },
         child: image,
@@ -234,17 +222,16 @@ class _GridListTechItem extends StatelessWidget {
         ),
         clipBehavior: Clip.antiAlias,
         child: GridTileBar(
-          backgroundColor: Colors.black45,
-          title: _GridTitleText(tech.title),
-          subtitle: _GridTitleText(
-              "Made by " +
-                  tech.githubOwner +
-                  "\n" +
-                  tech.latestTag + " ("+_techPublishedAtString+")"
-          )
-        ),
+            backgroundColor: Colors.black45,
+            title: _GridTitleText(tech.title),
+            subtitle: _GridTitleText("Made by " +
+                tech.githubOwner +
+                "\n" +
+                tech.latestTag +
+                " (" +
+                _techPublishedAtString +
+                ")")),
       ),
     );
   }
 }
-

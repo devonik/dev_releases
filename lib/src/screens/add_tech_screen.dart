@@ -311,7 +311,6 @@ class AddTechView extends State<AddTechScreen> {
         }
     );
   }
-
   void _uploadRepoImage(File image, Tech tech){
     pr.show();
     addImageToTech(image, tech).then((response){
