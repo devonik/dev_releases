@@ -1,17 +1,12 @@
 import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
-import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
-import 'package:dev_releases/src/service/shared_preferences_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
 import 'package:dev_releases/src/widgets/settings_save_button.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   @protected

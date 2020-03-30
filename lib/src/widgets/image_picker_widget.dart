@@ -17,7 +17,6 @@ class ImagePickerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    File _image;
     return Container(
       height: 56.0, // in logical pixels
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -30,21 +29,6 @@ class ImagePickerWidget extends StatelessWidget {
             icon: Icon(Icons.file_upload),
           )
       )
-    );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Image Picker Example'),
-      ),
-      body: Center(
-        child: _image == null
-            ? Text('No image selected.')
-            : Image.file(_image),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: getImage,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
-      ),
     );
   }
 }

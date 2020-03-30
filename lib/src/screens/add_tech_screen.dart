@@ -1,9 +1,7 @@
 
 
-import 'dart:ffi';
 import 'dart:io';
 
-import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/add_tech_response.dart';
 import 'package:dev_releases/src/models/github_repo_model.dart';
@@ -14,7 +12,6 @@ import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/image_picker_widget.dart';
 import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 

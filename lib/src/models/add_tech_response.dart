@@ -1,4 +1,3 @@
-import 'package:dev_releases/src/models/tech_model.dart';
 
 class AddTechResponse {
   final dynamic tech;

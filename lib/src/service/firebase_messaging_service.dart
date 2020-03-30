@@ -1,11 +1,9 @@
-import 'package:dev_releases/src/App.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 
 Future<dynamic> backgroundHandle(Map<String, dynamic> message) {
   //This method name has to be 'backgroundHandle' otherwise we get java.lang.Integer cannot be cast to java.lang.Long on startup

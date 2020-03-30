@@ -1,4 +1,5 @@
 import 'package:dev_releases/src/models/tech_model.dart';
+import 'package:dev_releases/src/widgets/app_bar_report_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -16,13 +17,14 @@ class TechDetailScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text(tech.title),
-        actions: <Widget>[      // Add 3 lines from here...
+        actions: <Widget>[
           IconButton(
               icon: Icon(FontAwesome.github),
               onPressed: () {
                 launch(tech.githubLink);
               }
           ),
+          ReportMenu()
         ],
       ),
       body: Padding(

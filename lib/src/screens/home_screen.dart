@@ -1,14 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cache_image/cache_image.dart';
 import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
-import 'package:dev_releases/src/screens/add_tech_screen.dart';
-import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
-import 'package:dev_releases/src/service/shared_preferences_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
 import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
@@ -206,13 +203,18 @@ class _GridListTechItem extends StatelessWidget {
     final Widget image = Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       clipBehavior: Clip.antiAlias,
-      child: tech.heroImage != null ? CachedNetworkImage(
+      child: tech.heroImage != null ? FadeInImage(
+        fit: BoxFit.scaleDown,
+        placeholder: AssetImage('assets/icon/fancy_github.png'),
+        image: CacheImage(tech.heroImage)
+      ): Image.asset('assets/icon/fancy_github.png'),
+    );
+    //OLD WAY: Done with cache_network_image. But there were an error
+      /*tech.heroImage != null ? CachedNetworkImage(
         imageUrl: tech.heroImage,
         placeholder: (context, url) => buildRiveLoadingCircle(),
         errorWidget: (context, url, error) => Icon(Icons.error),
-      ) : Image.asset('assets/icon/fancy_github.png'),
-    );
-
+      ) : Image.asset('assets/icon/fancy_github.png'),*/
     return GridTile(
       child: new InkWell(
         onTap: () {

@@ -19,7 +19,7 @@ Future<List<GithubRepo>> fetchGithubRepos(String name) async {
 
 // A function that converts a response body into a List<GithubRepo>.
 List<GithubRepo> parseGithubRepos(String responseBody) {
-  final parsedItems = json.decode(responseBody)['items'].cast<Map<String, dynamic>>();;
+  final parsedItems = json.decode(responseBody)['items'].cast<Map<String, dynamic>>();
 
   return parsedItems.map<GithubRepo>((json) => GithubRepo.fromJson(json)).toList();
 }

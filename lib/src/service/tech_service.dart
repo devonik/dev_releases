@@ -6,7 +6,6 @@ import 'package:dev_releases/src/models/github_repo_model.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 
 
 Future<List<Tech>> fetchTechs() async {
