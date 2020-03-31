@@ -21,12 +21,13 @@ class ReportMenu extends StatelessWidget {
               _showCustomReportDialog(context).then((input) {
                 //we have to result.toString().split('.').last because otherwise we get ReportMenuOptions.Custom
                 sendBugReport(tech, result.toString().split('.').last, input);
+                displaySnackBar(context, "Thanks for your support");
               });
-            } else {
+            } else if(result.runtimeType == ReportMenuOptions) {
               //we have to result.toString().split('.').last because otherwise we get ReportMenuOptions.MissingImage
               sendBugReport(tech, result.toString().split('.').last, '');
+              displaySnackBar(context, "Thanks for your support");
             }
-            displaySnackBar(context, "Thanks for your support");
           });
         });
   }

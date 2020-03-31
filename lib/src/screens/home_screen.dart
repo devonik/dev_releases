@@ -89,12 +89,6 @@ class HomeView extends State<HomeScreen> {
           title: Text(Constants.appTitle),
           actions: <Widget>[
             IconButton(
-                icon: Icon(Icons.error),
-                onPressed: () {
-                  //Test crashlytics firebase report
-                  Crashlytics.instance.crash();
-                }),
-            IconButton(
                 icon: Icon(Icons.colorize),
                 onPressed: () {
                   //Test crashlytics firebase report

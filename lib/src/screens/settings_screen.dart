@@ -33,7 +33,6 @@ class SettingsView extends State<SettingsScreen> {
   Widget _buildSuggestions() {
     if (_remoteTechData.length == 0) {
       fetchTechs().then((response) {
-        print("fetching remote techs");
         setState(() {
           _remoteTechData = response;
           _filteredRemoteTechDataList = response;

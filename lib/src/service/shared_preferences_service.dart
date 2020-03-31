@@ -1,7 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 Future<bool> fetchIsDark() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getBool('isDark');
+  var isDark = prefs.getBool('isDark');
+  return isDark != null ? isDark : false;
 }
 Future<List<String>> fetchLocalTechs() async{
   final prefs = await SharedPreferences.getInstance();
