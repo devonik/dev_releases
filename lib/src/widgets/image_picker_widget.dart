@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_picker/image_picker.dart';
 
 typedef void ImagePickerCallback(File image);
@@ -26,7 +27,7 @@ class ImagePickerWidget extends StatelessWidget {
           IconButton(
             onPressed: getImage,
             tooltip: 'Click to upload',
-            icon: Icon(Icons.file_upload),
+            icon: Icon(MaterialIcons.add_a_photo),
           )
       )
     );

@@ -30,21 +30,20 @@ class TechDetailScreen extends StatelessWidget{
       appBar: AppBar(
         title: Text(tech.title),
         actions: <Widget>[
-          //TODO: Only show this widget if there is no image
-          Builder(
+          tech.heroImage == null ? Builder(
             builder: (BuildContext context) {
               return ImagePickerWidget(callback: (selectedImage) {
                 _uploadRepoImage(context, selectedImage, tech);
               });
             },
-          ),
+          ) : Container(),
           IconButton(
               icon: Icon(FontAwesome.github),
               onPressed: () {
                 launch(tech.githubLink);
               }
           ),
-          ReportMenu()
+          ReportMenu(tech: tech)
         ],
       ),
       body: Padding(

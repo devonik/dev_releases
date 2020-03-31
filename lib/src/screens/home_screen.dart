@@ -192,6 +192,8 @@ class _GridListTechItem extends StatelessWidget {
           ? FadeInImage(
               fit: BoxFit.scaleDown,
               placeholder: AssetImage('assets/icon/fancy_github.png'),
+              //duration = Retry duration if download fails.
+              //durationExpiration = Retry duration expiration.
               image: CacheImage(tech.heroImage))
           : Image.asset('assets/icon/fancy_github.png'),
     );
@@ -205,13 +207,9 @@ class _GridListTechItem extends StatelessWidget {
       child: new InkWell(
         onTap: () {
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TechDetailScreen(
-                  tech: tech
-            )
-            )
-          );
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TechDetailScreen(tech: tech)));
         },
         child: image,
       ),
