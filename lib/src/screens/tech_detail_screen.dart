@@ -17,11 +17,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 class TechDetailScreen extends StatelessWidget{
-  final List<String> favTechIdsStringList;
   final Tech tech;
 
   // In the constructor, require a Tech.
-  TechDetailScreen({Key key, @required this.tech, @required this.favTechIdsStringList}) : super(key: key);
+  TechDetailScreen({Key key, @required this.tech}) : super(key: key);
 
 
   @override
