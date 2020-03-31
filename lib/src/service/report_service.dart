@@ -10,7 +10,7 @@ import 'package:dev_releases/src/models/tech_model.dart';
 
 Future<bool> sendBugReport(Tech tech, String bugType, String customText) async {
   final http.Response response = await http.post(
-    Constants.localBackendUrl+'/api/report/sendBugReport',
+    Constants.backendUrl+'/api/report/sendBugReport',
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
