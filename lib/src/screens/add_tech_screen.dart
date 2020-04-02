@@ -9,6 +9,7 @@ import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/github_repo_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
+import 'package:dev_releases/src/widgets/fit_in_space_text_widget.dart';
 import 'package:dev_releases/src/widgets/image_picker_widget.dart';
 import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class AddTechView extends State<AddTechScreen> {
 
   return Scaffold(
       appBar: AppBar(
-        title: Text('Add your favorite github repository'),
+        title: FitInSpaceTextWidget('Add your favorite github repository'),
       ),
       body: _buildRepoDropdown()
     );

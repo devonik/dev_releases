@@ -12,7 +12,8 @@ class SaveSettingsButtonWidget extends StatelessWidget {
   final SettingsSavedCallback callback;
   final TechRepository techRepository = new TechRepository();
 
-  SaveSettingsButtonWidget({this.favTechIdsStringList, this.remoteTechData, this.callback});
+  SaveSettingsButtonWidget(
+      {this.favTechIdsStringList, this.remoteTechData, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -21,31 +22,38 @@ class SaveSettingsButtonWidget extends StatelessWidget {
         onPressed: () {
           _saveSettings(context);
         },
-        tooltip: "Save"
-    );
+        tooltip: "Save");
   }
 
-  void _saveSettings(BuildContext context){
-    if(remoteTechData.length > 0 ) {
-
+  void _saveSettings(BuildContext context) {
+    if (remoteTechData.length > 0) {
       List<Tech> relevantTechList = new List();
       for (int i = 0; i < favTechIdsStringList.length; i++) {
         int id = int.parse(favTechIdsStringList[i]);
-        relevantTechList.add(
-            remoteTechData.singleWhere((item) => item.id == id));
+        Tech remoteTech = remoteTechData.singleWhere((item) => item.id == id,
+            orElse: () => null);
+        if (remoteTech != null) {
+          relevantTechList.add(remoteTech);
+        }
       }
-      Future
-          .wait([techRepository.insertOrUpdateTechList(relevantTechList), setLocalTechs(favTechIdsStringList)])
-          .then((List responses) {
-            print("finish: "+responses.toString());
-            callback(true);
-          })
-          .catchError((e) => Crashlytics.instance.recordError('Could not save settings', e));
-    }else{
+      if (relevantTechList.length > 0) {
+        Future.wait([
+          techRepository.insertOrUpdateTechList(relevantTechList),
+          setLocalTechs(favTechIdsStringList)
+        ]).then((List responses) {
+          print("finish: " + responses.toString());
+          callback(true);
+        }).catchError((e) =>
+            Crashlytics.instance.recordError('Could not save settings', e));
+      } else {
+        Scaffold.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text('Select atleast one item')));
+      }
+    } else {
       Scaffold.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(content: Text('Please wait for the data')));
     }
   }
-
 }

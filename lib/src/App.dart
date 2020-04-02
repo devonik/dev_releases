@@ -53,7 +53,14 @@ class _AppState extends State<App> {
         data: (brightness) => new ThemeData(
           primarySwatch: Colors.blueGrey,
           brightness: brightness,
-          fontFamily: 'JetBrainsMono',
+          fontFamily: 'VictorMono',
+          // Define the default TextTheme. Use this to specify the default
+          // text styling for headlines, titles, bodies of text, and more.
+          textTheme: TextTheme(
+            headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+            title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+            body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+          ),
         ),
         themedWidgetBuilder: (context, theme) {
           return new MaterialApp(

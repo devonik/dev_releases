@@ -5,6 +5,7 @@ import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_report_menu.dart';
+import 'package:dev_releases/src/widgets/fit_in_space_text_widget.dart';
 import 'package:dev_releases/src/widgets/image_picker_widget.dart';
 import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,7 +28,7 @@ class TechDetailScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(tech.title),
+        title: FitInSpaceTextWidget(tech.title),
         actions: <Widget>[
           tech.heroImage == null ? Builder(
             builder: (BuildContext context) {

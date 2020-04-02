@@ -9,6 +9,7 @@ import 'package:dev_releases/src/service/firebase_messaging_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
 import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
+import 'package:dev_releases/src/widgets/fit_in_space_text_widget.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +104,6 @@ class HomeView extends State<HomeScreen> {
             SettingButtonWidget(
               favTechIdsStringList: favTechIdsStringList,
               callback: (favList) => setState(() {
-                //TODO WHY ITS DONT GET UPDATE - because we have to wait until all techs are saved
                 favTechIdsStringList = favList;
               }),
             ),
@@ -149,22 +149,6 @@ class HomeView extends State<HomeScreen> {
           }
           return buildRiveLoadingCircle();
         });
-  }
-}
-
-//Allow the text size to shrink to fit in the space
-class _GridTitleText extends StatelessWidget {
-  const _GridTitleText(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: AlignmentDirectional.centerStart,
-      child: Text(text),
-    );
   }
 }
 
@@ -215,8 +199,8 @@ class _GridListTechItem extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: GridTileBar(
             backgroundColor: Colors.black45,
-            title: _GridTitleText(tech.title),
-            subtitle: _GridTitleText("Made by " +
+            title: FitInSpaceTextWidget(tech.title),
+            subtitle: FitInSpaceTextWidget("Made by " +
                 tech.githubOwner +
                 "\n" +
                 tech.latestTag +

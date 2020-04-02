@@ -3,6 +3,7 @@ import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/service/firebase_messaging_service.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
+import 'package:dev_releases/src/widgets/fit_in_space_text_widget.dart';
 import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
 import 'package:dev_releases/src/widgets/settings_save_button.dart';
 import 'package:flutter/material.dart';
@@ -150,7 +151,7 @@ class SettingsView extends State<SettingsScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Choose youre favorite tools'),
+          title: FitInSpaceTextWidget('Choose your favorite tools'),
         ),
         body: _buildSuggestions(),
         floatingActionButton: SaveSettingsButtonWidget(
