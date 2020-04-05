@@ -69,7 +69,7 @@ flutter:
     - assets/animations/
     - assets/icon/
 
-  fonts:
+  #fonts:
     #- family: JetBrainsMono
     #  fonts:
     #    - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Bold.ttf
@@ -82,32 +82,32 @@ flutter:
     #    - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Regular.ttf
     #      style: italic
 
-    - family: VictorMono
-      fonts:
-        - asset: assets/fonts/VictorMono/VictorMono-Bold.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-BoldItalic.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-BoldOblique.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-ExtraLight.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-ExtraLightItalic.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-ExtraLightOblique.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-Italic.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-Light.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-LightItalic.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-LightOblique.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-Medium.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-MediumItalic.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-MediumOblique.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-Oblique.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-Regular.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-SemiBold.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-SemiBoldItalic.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-SemiBoldOblique.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-Thin.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-ThinItalic.ttf
-        - asset: assets/fonts/VictorMono/VictorMono-ThinOblique.ttf
+    #- family: VictorMono
+    #  fonts:
+    #    - asset: assets/fonts/VictorMono/VictorMono-Bold.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-BoldItalic.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-BoldOblique.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-ExtraLight.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-ExtraLightItalic.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-ExtraLightOblique.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-Italic.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-Light.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-LightItalic.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-LightOblique.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-Medium.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-MediumItalic.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-MediumOblique.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-Oblique.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-Regular.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-SemiBold.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-SemiBoldItalic.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-SemiBoldOblique.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-Thin.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-ThinItalic.ttf
+    #    - asset: assets/fonts/VictorMono/VictorMono-ThinOblique.ttf
 
 
-          style: italic
+    #      style: italic
 
   #   - family: Trajan Pro
   #     fonts:

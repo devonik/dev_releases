@@ -167,12 +167,13 @@ class _GridListTechItem extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       clipBehavior: Clip.antiAlias,
       child: tech.heroImage != null
-          ? FadeInImage(
+          ? Image(
               fit: BoxFit.scaleDown,
-              placeholder: AssetImage('assets/icon/fancy_github.png'),
+              //placeholder: AssetImage('assets/icon/fancy_github.png'),
               //duration = Retry duration if download fails.
               //durationExpiration = Retry duration expiration.
               image: CacheImage(tech.heroImage))
+
           : Image.asset('assets/icon/fancy_github.png'),
     );
     //OLD WAY: Done with cache_network_image. But there were an error
