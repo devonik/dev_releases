@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
@@ -39,14 +41,17 @@ class _AppState extends State<App> {
       //If the app is opened first time we have no local techs
       _defaultScreen = new SettingsScreen();
     }
-    //Cannot persist it wait for https://github.com/Norbert515/dynamic_theme/issues/43
-    fetchIsDark().then((isDark){
-      if(isDark){
-        FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
-      }else{
-        FlutterStatusbarcolor.setNavigationBarColor(Colors.blueGrey);
-      }
-    });
+    if(Platform.isAndroid){
+      //Cannot persist it wait for https://github.com/Norbert515/dynamic_theme/issues/43
+      fetchIsDark().then((isDark){
+        if(isDark){
+          FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
+        }else{
+          FlutterStatusbarcolor.setNavigationBarColor(Colors.blueGrey);
+        }
+      });
+    }
+
     //FlutterStatusbarcolor.setNavigationBarColor(Theme.of(context).brightness == Brightness.dark ? Brightness.light: Brightness.dark);
     return new DynamicTheme(
         defaultBrightness: Brightness.light,
