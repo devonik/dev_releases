@@ -53,7 +53,7 @@ class _AppState extends State<App> {
         data: (brightness) => new ThemeData(
           primarySwatch: Colors.blueGrey,
           brightness: brightness,
-          fontFamily: 'VictorMono',
+          fontFamily: 'Hind',
           // Define the default TextTheme. Use this to specify the default
           // text styling for headlines, titles, bodies of text, and more.
           textTheme: TextTheme(

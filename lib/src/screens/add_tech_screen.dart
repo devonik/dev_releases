@@ -299,7 +299,7 @@ class AddTechView extends State<AddTechScreen> {
             actions: <Widget>[
               FlatButton(
                 child: Text(
-                  "I does not have a image :(",
+                  "I do not have a image :(",
                   style: TextStyle(color: Colors.redAccent),
                 ),
                 onPressed: () {
