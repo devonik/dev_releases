@@ -10,8 +10,8 @@ import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
 import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
 import 'package:dev_releases/src/widgets/fit_in_space_text_widget.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+//import 'package:dynamic_theme/dynamic_theme.dart';
+//import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
@@ -89,12 +89,12 @@ class HomeView extends State<HomeScreen> {
         appBar: AppBar(
           title: Text(Constants.appTitle),
           actions: <Widget>[
-            IconButton(
+            /*IconButton(
                 icon: Icon(Icons.colorize),
                 onPressed: () {
                   //Test crashlytics firebase report
                   _changeBrightness(context);
-                }),
+                }),*/
             AddTechButtonWidget(
               favTechIdsStringList: favTechIdsStringList,
               callback: (favList) => setState(() {
@@ -112,7 +112,7 @@ class HomeView extends State<HomeScreen> {
         body: _buildGrid(favTechIdsStringList));
   }
 
-  void _changeBrightness(BuildContext context) {
+  /*void _changeBrightness(BuildContext context) {
     DynamicTheme.of(context).setBrightness(
         Theme.of(context).brightness == Brightness.dark
             ? Brightness.light
@@ -121,7 +121,7 @@ class HomeView extends State<HomeScreen> {
         Theme.of(context).brightness == Brightness.dark
             ? Colors.blueGrey
             : Colors.black);
-  }
+  }*/
 
   Widget _buildGrid(List<String> favTechIdsStringList) {
     return FutureBuilder<List<Tech>>(
