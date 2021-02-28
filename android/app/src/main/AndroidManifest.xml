@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="devnik.dev_releases">
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,7 +11,8 @@
     <application
         android:name=".Application"
         android:label="Dev releases"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        tools:targetApi="lollipop">
         <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
             See README(https://goo.gl/l4GJaQ) for more. -->
         <meta-data

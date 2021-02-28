@@ -50,7 +50,7 @@ dependencies:
   #dynamic_theme: ^1.0.1
   flutter_statusbarcolor: ^0.2.3
   image_picker: ^0.6.3+4
-  pull_to_refresh: 1.6.4
+  pull_to_refresh: 1.6.3
 
 dev_dependencies:
   flutter_test:

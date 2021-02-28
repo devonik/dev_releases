@@ -1,3 +1,4 @@
+
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
@@ -31,9 +32,17 @@ void firebaseMessagingUnSubscribe(String topic) {
   _firebaseMessaging.unsubscribeFromTopic(topic);
 }
 
+void initFirebaseTopicSubscription(List<String> favTechIdsStringList){
+  favTechIdsStringList.forEach((element) {
+    firebaseMessagingSubscribe('new-release-' + element);
+  });
+}
+
 void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView homeView){
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   TechRepository techRepository = new TechRepository();
+
+  initFirebaseTopicSubscription(favTechIdsStringList);
 
   _firebaseMessaging.configure(
     onMessage: (Map<String, dynamic> message) async {
