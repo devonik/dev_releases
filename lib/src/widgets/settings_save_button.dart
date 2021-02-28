@@ -44,7 +44,7 @@ class SaveSettingsButtonWidget extends StatelessWidget {
           print("finish: " + responses.toString());
           callback(true);
         }).catchError((e) =>
-            Crashlytics.instance.recordError('Could not save settings', e));
+            FirebaseCrashlytics.instance.recordError('Could not save settings', e));
       } else {
         Scaffold.of(context)
           ..removeCurrentSnackBar()

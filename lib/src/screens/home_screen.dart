@@ -1,21 +1,23 @@
-import 'package:cache_image/cache_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/helper/global_widgets.dart';
 import 'package:dev_releases/src/helper/screen_arguments.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/tech_detail_screen.dart';
-import 'package:dev_releases/src/service/firebase_messaging_service.dart';
+
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
 import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
 import 'package:dev_releases/src/widgets/fit_in_space_text_widget.dart';
+
 //import 'package:dynamic_theme/dynamic_theme.dart';
 //import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final List<String> favTechIdsStringList;
@@ -38,8 +40,6 @@ class HomeView extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    //firebaseMessagingSubscribe('new-tech-release');
-    firebaseMessagingConfigure(favTechIdsStringList, this);
     _refreshController = RefreshController(initialRefresh: false);
   }
 
@@ -167,13 +167,18 @@ class _GridListTechItem extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       clipBehavior: Clip.antiAlias,
       child: tech.heroImage != null
-          ? Image(
-              fit: BoxFit.scaleDown,
-              //placeholder: AssetImage('assets/icon/fancy_github.png'),
-              //duration = Retry duration if download fails.
-              //durationExpiration = Retry duration expiration.
-              image: CacheImage(tech.heroImage))
-
+          ? CachedNetworkImage(
+              imageUrl: tech.heroImage,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.scaleDown),
+                ),
+              ),
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            )
           : Image.asset('assets/icon/fancy_github.png'),
     );
     //OLD WAY: Done with cache_network_image. But there were an error

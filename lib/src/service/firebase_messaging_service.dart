@@ -1,25 +1,19 @@
-
+import 'dart:developer';
+import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-Future<dynamic> backgroundHandle(Map<String, dynamic> message) {
-  //This method name has to be 'backgroundHandle' otherwise we get java.lang.Integer cannot be cast to java.lang.Long on startup
-  //See here: https://github.com/FirebaseExtended/flutterfire/issues/170
-  if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
-  }
-
-  if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
-  }
-
-  // Or do other work.
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  log("Firebase messaging(onBackgroundMessage): notification: " +
+      message.toString());
 }
 
 void firebaseMessagingSubscribe(String topic) {
@@ -32,87 +26,70 @@ void firebaseMessagingUnSubscribe(String topic) {
   _firebaseMessaging.unsubscribeFromTopic(topic);
 }
 
-void initFirebaseTopicSubscription(List<String> favTechIdsStringList){
+void initFirebaseTopicSubscription(List<String> favTechIdsStringList) {
   favTechIdsStringList.forEach((element) {
     firebaseMessagingSubscribe('new-release-' + element);
   });
 }
 
-void firebaseMessagingConfigure(List<String> favTechIdsStringList, HomeView homeView){
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+void firebaseMessagingConfigure(List<String> favTechIdsStringList) {
   TechRepository techRepository = new TechRepository();
 
   initFirebaseTopicSubscription(favTechIdsStringList);
 
-  _firebaseMessaging.configure(
-    onMessage: (Map<String, dynamic> message) async {
-      if (message.containsKey('data')) {
-        final dynamic data = message['data'];
-        if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
-          if (favTechIdsStringList.contains(data['id'].toString())) {
-            if(updateTechFromNotificationData(data)){
-              // ignore: invalid_use_of_protected_member
-              homeView.setState((){});
-            }
+  //Handle foreground
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    log("Firebase messaging(onMessage): notification: " + message.toString());
+    if (message.data != null) {
+      if (message.data['message_identifier'] ==
+          'new-release-' + message.data['id'].toString()) {
+        if (favTechIdsStringList.contains(message.data['id'].toString())) {
+          updateTechFromNotificationData(message.data);
+        }
+      }
+    }
+  });
+
+  //Set background handler
+  FirebaseMessaging.onBackgroundMessage(
+      _firebaseMessagingBackgroundHandler);
+
+  //Set onMessageOpenedApp handler
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    log("Firebase messaging(onMessageOpenedApp): notification: " +
+        message.toString());
+    if (message.data != null) {
+      if (message.data['message_identifier'] ==
+          'new-release-' + message.data['id'].toString()) {
+        //Lets update whole dashboard - may there are multiple updates
+        // monitor network fetch
+        fetchTechsByIdStringList(favTechIdsStringList).then((response) {
+          if (response != null) {
+            techRepository.insertOrUpdateTechList(response);
           }
-        }
+        });
       }
-    },
-    onBackgroundMessage: backgroundHandle,
-    onLaunch: (Map<String, dynamic> message) async {
+    }
+  });
 
-      if (message.containsKey('data')) {
-        final dynamic data = message['data'];
-        if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
-          //Lets update whole dashboard - may there are multiple updates
-          // monitor network fetch
-          fetchTechsByIdStringList(favTechIdsStringList).then((response){
-            if(response != null){
-              techRepository.insertOrUpdateTechList(response).then((response){
-                // ignore: invalid_use_of_protected_member
-                homeView.setState(() {});
-              });
-            }
-          });
-        }
-      }
-
-    },
-    onResume: (Map<String, dynamic> message) async {
-      //This method is called when the app is in the background but its on standby
-      if (message.containsKey('data')) {
-        final dynamic data = message['data'];
-        if(data['message_identifier'] == 'new-release-'+data['id'].toString()) {
-          //Lets update whole dashboard - may there are multiple updates
-          // monitor network fetch
-          fetchTechsByIdStringList(favTechIdsStringList).then((response){
-            if(response != null){
-              techRepository.insertOrUpdateTechList(response).then((response){
-                // ignore: invalid_use_of_protected_member
-                homeView.setState(() {});
-              });
-            }
-          });
-        }
-      }
-    },
+  //Request permission (Need fo IOS)
+  FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
   );
-  _firebaseMessaging.requestNotificationPermissions(
-      const IosNotificationSettings(
-          sound: true, badge: true, alert: true, provisional: true));
 
-  _firebaseMessaging.onIosSettingsRegistered
-      .listen((IosNotificationSettings settings) {
-    print("Settings registered: $settings");
-  });
-
-  _firebaseMessaging.getToken().then((String token) {
-    assert(token != null);
-    print("Push Messaging token: $token");
-  });
+  //Add web token for firebase handshake (Need for web)
+  FirebaseMessaging.instance.getToken(
+    vapidKey: Constants.firebaseWebPushCertificateKey
+  );
 }
 
-bool updateTechFromNotificationData(Map<dynamic, dynamic> data){
+bool updateTechFromNotificationData(Map<dynamic, dynamic> data) {
   TechRepository techRepository = new TechRepository();
 
   Tech tech;
@@ -121,7 +98,8 @@ bool updateTechFromNotificationData(Map<dynamic, dynamic> data){
   try {
     tech = Tech.fromFirebaseMessage(map);
   } catch (ex) {
-    Crashlytics.instance.recordError('Could not parse firebase message to Tech Model :(',ex);
+    FirebaseCrashlytics.instance.recordError(
+        'Could not parse firebase message to Tech Model :(', ex);
     return false;
   }
   try {
@@ -129,7 +107,8 @@ bool updateTechFromNotificationData(Map<dynamic, dynamic> data){
     print("Tech id [" + data['id'] + "] got an update");
     return true;
   } catch (ex) {
-    Crashlytics.instance.recordError('Could not update Tech model from parsed firebase message:(',ex);
+    FirebaseCrashlytics.instance.recordError(
+        'Could not update Tech model from parsed firebase message:(', ex);
     return false;
   }
 }

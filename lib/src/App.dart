@@ -5,9 +5,12 @@ import 'package:dev_releases/src/screens/add_tech_screen.dart';
 import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/screens/settings_screen.dart';
 import 'package:dev_releases/src/service/shared_preferences_service.dart';
+import 'package:dev_releases/src/widgets/progress_dialog_widget.dart';
 import 'package:flutter/material.dart';
 //import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+
+
 
 class App extends StatefulWidget {
   final List<String> favTechIdsStringList;
@@ -23,11 +26,9 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-
   final List<String> favTechIdsStringList;
 
   _AppState({this.favTechIdsStringList});
-
 
   @override
   Widget build(BuildContext context) {
