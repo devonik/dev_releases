@@ -9,6 +9,8 @@ import 'package:dev_releases/src/service/firebase_messaging_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -36,7 +38,9 @@ void main() async {
   }).sendPort);
 
   final List<String> favTechIdsStringList = await fetchLocalTechs();
-  firebaseMessagingConfigure(favTechIdsStringList);
+  //If there are tech ids in shared preferences - configure the firebase staff
+  if(favTechIdsStringList != null) firebaseMessagingConfigure(favTechIdsStringList);
+
   final App app = App(
       favTechIdsStringList: favTechIdsStringList
   );

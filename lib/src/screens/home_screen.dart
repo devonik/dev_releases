@@ -10,6 +10,7 @@ import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:dev_releases/src/widgets/app_bar_add_tech_button.dart';
 import 'package:dev_releases/src/widgets/app_bar_setting_button.dart';
 import 'package:dev_releases/src/widgets/fit_in_space_text_widget.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 //import 'package:dynamic_theme/dynamic_theme.dart';
 //import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -17,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:dev_releases/src/service/firebase_messaging_service.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<String> favTechIdsStringList;
@@ -40,7 +41,48 @@ class HomeView extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    firebaseOnMessageOpenedApp();
     _refreshController = RefreshController(initialRefresh: false);
+  }
+
+  void firebaseOnMessageOpenedApp() async {
+    //This will be called if the screen is called by notification
+
+    RemoteMessage initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    //case 1: App comes from terminated state
+    if (initialMessage != null) {
+      if (initialMessage.data['message_identifier'] ==
+          'new-release-' + initialMessage.data['id'].toString()) {
+        fetchTechsByIdStringList(favTechIdsStringList).then((response) {
+          if (response != null) {
+            techRepository.insertOrUpdateTechList(response).then((response) {
+              setState(() {});
+            });
+          }
+        });
+      }
+    }
+
+    //case 2: App comes from background state
+    //handle any interaction when the app is in the background via Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.data != null) {
+        if (message.data['message_identifier'] ==
+            'new-release-' + message.data['id'].toString()) {
+          //Lets update whole dashboard - may there are multiple updates
+          // monitor network fetch
+          fetchTechsByIdStringList(favTechIdsStringList).then((response) {
+            if (response != null) {
+              techRepository.insertOrUpdateTechList(response).then((response) {
+                setState(() {});
+              });
+            }
+          });
+        }
+      }
+    });
   }
 
   //Pull to refresh
@@ -172,8 +214,7 @@ class _GridListTechItem extends StatelessWidget {
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.scaleDown),
+                      image: imageProvider, fit: BoxFit.scaleDown),
                 ),
               ),
               placeholder: (context, url) => CircularProgressIndicator(),
