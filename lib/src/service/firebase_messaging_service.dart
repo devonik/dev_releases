@@ -1,8 +1,6 @@
-import 'dart:developer';
 import 'package:dev_releases/src/helper/constants.dart';
 import 'package:dev_releases/src/models/tech_model.dart';
 import 'package:dev_releases/src/repository/tech_repository.dart';
-import 'package:dev_releases/src/screens/home_screen.dart';
 import 'package:dev_releases/src/service/tech_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -12,18 +10,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-  log("Firebase messaging(onBackgroundMessage): notification: " +
+  FirebaseCrashlytics.instance.log("Firebase messaging(onBackgroundMessage): notification: " +
       message.toString());
 }
 
 void firebaseMessagingSubscribe(String topic) {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  _firebaseMessaging.subscribeToTopic(topic);
+  FirebaseMessaging.instance.subscribeToTopic(topic);
 }
 
 void firebaseMessagingUnSubscribe(String topic) {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  _firebaseMessaging.unsubscribeFromTopic(topic);
+  FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 }
 
 void initFirebaseTopicSubscription(List<String> favTechIdsStringList) {
@@ -39,7 +35,7 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList) {
 
   //Handle foreground
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    log("Firebase messaging(onMessage): notification: " + message.toString());
+    FirebaseCrashlytics.instance.log("Firebase messaging(onMessage): notification: " + message.toString());
     if (message.data != null) {
       if (message.data['message_identifier'] ==
           'new-release-' + message.data['id'].toString()) {
@@ -56,7 +52,7 @@ void firebaseMessagingConfigure(List<String> favTechIdsStringList) {
 
   //Set onMessageOpenedApp handler
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    log("Firebase messaging(onMessageOpenedApp): notification: " +
+    FirebaseCrashlytics.instance.log("Firebase messaging(onMessageOpenedApp): notification: " +
         message.toString());
     if (message.data != null) {
       if (message.data['message_identifier'] ==
@@ -104,7 +100,6 @@ bool updateTechFromNotificationData(Map<dynamic, dynamic> data) {
   }
   try {
     techRepository.updateTech(tech);
-    print("Tech id [" + data['id'] + "] got an update");
     return true;
   } catch (ex) {
     FirebaseCrashlytics.instance.recordError(
