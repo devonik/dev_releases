@@ -154,17 +154,6 @@ class HomeView extends State<HomeScreen> {
         body: _buildGrid(favTechIdsStringList));
   }
 
-  /*void _changeBrightness(BuildContext context) {
-    DynamicTheme.of(context).setBrightness(
-        Theme.of(context).brightness == Brightness.dark
-            ? Brightness.light
-            : Brightness.dark);
-    FlutterStatusbarcolor.setNavigationBarColor(
-        Theme.of(context).brightness == Brightness.dark
-            ? Colors.blueGrey
-            : Colors.black);
-  }*/
-
   Widget _buildGrid(List<String> favTechIdsStringList) {
     return FutureBuilder<List<Tech>>(
         future: techRepository.getByIds(favTechIdsStringList.join(",")),
