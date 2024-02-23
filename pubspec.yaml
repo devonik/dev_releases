@@ -14,7 +14,7 @@ description: Have an overview of your favorite dev tools, frameworks or language
 version: 1.0.0+9
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
